@@ -60,7 +60,8 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.7.1",
     "file-loader": "^6.2.0",
-    "ftp-deploy": "^2.4.7"
+    "ftp-deploy": "^2.4.7",
+    "husky": "^9.1.7"
   },
   "eslintConfig": {
     "root": true,
