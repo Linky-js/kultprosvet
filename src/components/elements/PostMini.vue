@@ -22,12 +22,19 @@ export default {
       return `${day}.${month}.${year}`;
     },
   },
-  
+
 };
 </script>
 <template>
   <router-link :to="'/post/' + item.id" class="news__item">
     <img :src="apiDomain + 'web/uploads/' + item.title_photo" alt="news" class="news__item__image" />
+    <div class="news__item-arrow">
+      <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M0.125 4.37544L11.74 4.37551L8.43306 1.06738L9.31694 0.183499L14.1339 5.00044L9.31694 9.81738L8.43306 8.9335L11.74 5.62551L0.125 5.62544L0.125 4.37544Z"
+          fill="white" />
+      </svg>
+    </div>
     <div class="news__item--text">
       <div class="news__item__date">
         {{ formatDate(item.date_add) }}
@@ -38,7 +45,6 @@ export default {
       <div class="news__item__subtitle">
         {{ item.short_text }}
       </div>
-      <div class="news__item__link">Подробнее</div>
     </div>
   </router-link>
 </template>
@@ -48,12 +54,28 @@ export default {
   flex-direction: column;
   justify-content: flex-end;
   background: #333;
-  min-height: 419px;
   width: 420px;
-  height: 600px;
-  border-radius: 15px;
+  height: 512px;
+  border-radius: 28px;
   overflow: hidden;
   position: relative;
+}
+.news__item-arrow {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  backdrop-filter: blur(30px);
+}
+.news__item-arrow svg {
+  transform: rotate(-45deg);
 }
 .news__item__image {
   width: 100%;
@@ -65,82 +87,79 @@ export default {
   object-position: center;
   border-radius: 15px;
 }
+
 .news__item--text {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding: 14px 20px;
+  gap: 12px;
+  padding: 31px 24px 28px;
   position: relative;
   z-index: 2;
-  border-radius: 15px;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) -1.84%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-  backdrop-filter: blur(3.3499999046325684px);
+  background: linear-gradient(180deg, rgba(16, 28, 34, 0) 0%, rgba(16, 28, 34, 0.6) 100%);
+  backdrop-filter: blur(6px);
+  
 }
+
 .news__item__date {
-  color: rgba(255, 255, 255, 0.34);
   font-family: Onest;
   font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  padding: 10px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  width: max-content;
 }
+
 .news__item__title {
   color: #fff;
-
   font-family: Onest;
-  font-size: 18px;
-  font-style: normal;
+  font-size: 20px;
   font-weight: 600;
-  line-height: 120%; /* 21.6px */
-  letter-spacing: -0.36px;
+  line-height: 120%;
 }
-.news__item__subtitle {
-  color: #fff;
 
+.news__item__subtitle {
+  color: #ddd;
   font-family: Onest;
   font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
 }
-.news__item__link {
-  transition: 0.3s;
-  color: #000;
 
-  text-align: center;
-  font-family: "Proxima Nova";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 18px;
-  display: flex;
-  justify-content: center;
-  padding: 10px 20px;
-  border-radius: 128px;
-  border: 1px solid #fff;
-  background: #fff;
-  width: max-content;
-  margin-top: 30px;
-}
 
 
 @media screen and (max-width: 600px) {
   .news__item {
-    width: 350px;
-    height: 500px;
+    width: 260px;
+    height: 316px;
   }
-  .news__item__title{
+  .news__item--text {
+    padding: 30px 16px 16px;
+  }
+  .news__item-arrow {
+    width: 36px;
+    height: 36px;
+    right: 10px;
+    top: 10px;
+  }
+  .news__item-arrow svg {
+    width: 8px;
+    height: 12px;
+  }
+
+  .news__item__title {
     font-size: 16px;
   }
-  .news__item__subtitle{
+
+  .news__item__subtitle {
     font-size: 12px;
   }
-  .news__item__date{
-    font-size: 10px;
+
+  .news__item__date {
+    font-size: 11px;
   }
 }
 </style>

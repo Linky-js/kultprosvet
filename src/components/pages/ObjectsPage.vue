@@ -8,6 +8,7 @@ import { useStore } from "vuex";
 import gsap from "gsap";
 import ObjectModal from "../elements/ObjectModal.vue";
 import GalleryModal from "../elements/GalleryModal.vue";
+import SubscribeBlock from "../blocks/SubscribeBlock.vue";
 
 
 const store = useStore();
@@ -768,6 +769,7 @@ onBeforeUnmount(() => {
             </div>
         </div>
     </div>
+    <SubscribeBlock />
     <FooterBlock />
 </template>
 <style scoped>

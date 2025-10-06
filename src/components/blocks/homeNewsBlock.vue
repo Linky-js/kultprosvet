@@ -8,14 +8,12 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { myMixin2 } from "@/mixin";
 import PostMini from "../elements/PostMini.vue";
 import axios from "axios";
-import LinkWithAnimation from "../ui/LinkWithAnimation.vue";
 export default {
   name: "homeNewsBlock",
   components: {
     Swiper,
     SwiperSlide,
-    PostMini,
-    LinkWithAnimation
+    PostMini
   },
   mixins: [myMixin2],
   data() {
@@ -62,38 +60,38 @@ export default {
               !this.themes.some((theme) => theme.name === newsItem.theme.name)
             ) {
               this.themes.push(newsItem.theme);
-        }
-      });
+            }
+          });
 
           const sortedNewsByThemes = newsArray.reduce((acc, newsItem) => {
-        const themeName = newsItem.theme.name;
+            const themeName = newsItem.theme.name;
 
             // Проверяем, есть ли уже такая тема в аккумуляторе
             let themeEntry = acc.find(
               (entry) => entry.theme.name === themeName
             );
 
-        if (!themeEntry) {
+            if (!themeEntry) {
               // Если темы нет, создаем новую запись с пустым массивом новостей
-          themeEntry = { theme: newsItem.theme, news: [] };
-          acc.push(themeEntry);
-        }
+              themeEntry = { theme: newsItem.theme, news: [] };
+              acc.push(themeEntry);
+            }
 
             // Добавляем новость в массив новостей для этой темы
-        themeEntry.news.push(newsItem);
+            themeEntry.news.push(newsItem);
 
-        return acc;
-      }, []);
+            return acc;
+          }, []);
 
           // Преобразуем объект в массив
           this.newsArray = Object.values(sortedNewsByThemes);
-      setTimeout(() => {
+          setTimeout(() => {
             this.toggleNews("allVideosItems", "allVideosBtn");
-      }, 500);
-    })
-    .catch((error) => {
+          }, 500);
+        })
+        .catch((error) => {
           console.error("Error:", error);
-    });
+        });
     },
     toggleNews(id, btn) {
       let btns = document.querySelectorAll(".news__tabs__item");
@@ -119,137 +117,134 @@ export default {
   <div class="news mBlock">
     <div class="container">
       <div class="news__content">
-        <div class="head-h1">Новости</div>
+        <div class="news__head">
+          <div class="head-h1">Новости</div>
+          <router-link to="/news"><span>Больше новостей</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </router-link>
+        </div>
         <div class="news__body">
           <div class="news__tabs">
-            <div
-              class="news__tabs__item"
-              :id="'allVideosBtn'"
-              @click="toggleNews('allVideosItems', 'allVideosBtn')"
-            >
+            <div class="news__tabs__item" :id="'allVideosBtn'" @click="toggleNews('allVideosItems', 'allVideosBtn')">
               Все новости
             </div>
-            <div
-              class="news__tabs__item"
-              v-for="theme in themes"
-              :key="theme.id"
-              :id="theme.name + theme.id"
-              @click="toggleNews(theme.id + theme.name, theme.name + theme.id)"
-              :class="getThemeClass(theme.name)"
-            >
+            <div class="news__tabs__item" v-for="theme in themes" :key="theme.id" :id="theme.name + theme.id"
+              @click="toggleNews(theme.id + theme.name, theme.name + theme.id)" :class="getThemeClass(theme.name)">
               {{ theme.name }}
             </div>
           </div>
           <div class="news__wrap">
-            <Swiper
-              class="news__items"
-              :id="'allVideosItems'"
-              :slidesPerView="'auto'"
-              :spaceBetween="20"
-              :loop="false"
-              :modules="modules"
-              :breakpoints="{
-              1600: {
-                spaceBetween: 20,
-              },
-              1440: {
-                spaceBetween: 20,
-              },
-              1280: {
-                spaceBetween: 20,
-              },
-              1024: {
-                spaceBetween: 15,
-              },
-              768: {
-                spaceBetween: 15,
-              },
-              320: {
-                spaceBetween: 15,
-              },
-              
-            }"
-            >
-              <Swiper-slide
-                v-for="item in allVideos"
-                :key="item.id"
-                :to="'post/' + item.id"
-                class="slide"
-              >
+            <Swiper class="news__items" :id="'allVideosItems'" :slidesPerView="'auto'" :spaceBetween="20" :loop="false"
+              :modules="modules" :breakpoints="{
+                1600: {
+                  spaceBetween: 20,
+                },
+                1440: {
+                  spaceBetween: 20,
+                },
+                1280: {
+                  spaceBetween: 20,
+                },
+                1024: {
+                  spaceBetween: 15,
+                },
+                768: {
+                  spaceBetween: 15,
+                },
+                320: {
+                  spaceBetween: 15,
+                },
+
+              }">
+              <Swiper-slide v-for="item in allVideos" :key="item.id" :to="'post/' + item.id" class="slide">
                 <PostMini :item="item" />
               </Swiper-slide>
             </Swiper>
-            <Swiper
-              class="news__items"
-              v-for="news in newsArray"
-              :key="news.id"
-              :id="news.theme.id + news.theme.name"
-              :slidesPerView="'auto'"
-              :spaceBetween="20"
-              :loop="false"
-              :modules="modules"
-              :breakpoints="{
-              1600: {
-                spaceBetween: 20,
-              },
-              1440: {
-                spaceBetween: 20,
-              },
-              1280: {
-                spaceBetween: 20,
-              },
-              1024: {
-                spaceBetween: 15,
-              },
-              768: {
-                spaceBetween: 15,
-              },
-              320: {
-                spaceBetween: 15,
-              },
-              
-            }"
-            >
-              <Swiper-slide
-                v-for="item in news.news"
-                :key="item.id"
-                :to="item.link"
-                class="slide"
-              >
+            <Swiper class="news__items" v-for="news in newsArray" :key="news.id" :id="news.theme.id + news.theme.name"
+              :slidesPerView="'auto'" :spaceBetween="20" :loop="false" :modules="modules" :breakpoints="{
+                1600: {
+                  spaceBetween: 20,
+                },
+                1440: {
+                  spaceBetween: 20,
+                },
+                1280: {
+                  spaceBetween: 20,
+                },
+                1024: {
+                  spaceBetween: 15,
+                },
+                768: {
+                  spaceBetween: 15,
+                },
+                320: {
+                  spaceBetween: 15,
+                },
+
+              }">
+              <Swiper-slide v-for="item in news.news" :key="item.id" :to="item.link" class="slide">
                 <PostMini class="news__item" :item="item" />
               </Swiper-slide>
             </Swiper>
           </div>
         </div>
-        <LinkWithAnimation to="/news">Больше новостей</LinkWithAnimation>
+
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.news {
+  margin-top: 180px;
+}
+
+.news__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.news__head a {
+  color: rgba(51, 51, 51, 1);
+  font-size: 14px;
+  line-height: 18px;
+  font-family: 'Proxima Nova';
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .news__content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 36px;
 }
+
 .news__body {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
   position: relative;
 }
 
-.slide{
+.slide {
   width: max-content;
   height: auto;
 }
+
 .news__tabs {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   max-width: 853px;
 }
+
 .news__tabs__item {
   text-align: center;
   font-family: Onest;
@@ -260,20 +255,25 @@ export default {
   padding: 8px 26px;
   border-radius: 137px;
 }
+
 .news__wrap {
   position: relative;
 }
+
 .news__wrap {
   position: relative;
 }
+
 .news__items {
   opacity: 0;
   visibility: hidden;
   position: absolute;
+  overflow: visible;
   width: 100%;
   height: 100%;
   transition: opacity 0.5s, visibility 0.5s;
 }
+
 .news__items.active {
   opacity: 1;
   visibility: visible;
@@ -287,6 +287,7 @@ export default {
   gap: 7px;
   padding: 20px;
 }
+
 .news__item__date {
   color: rgba(255, 255, 255, 0.34);
   font-family: Onest;
@@ -295,15 +296,18 @@ export default {
   font-weight: 700;
   line-height: normal;
 }
+
 .news__item__title {
   color: var(--Neutral-100, #fff);
   font-family: Onest;
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
-  line-height: 22px; /* 122.222% */
+  line-height: 22px;
+  /* 122.222% */
   letter-spacing: -0.36px;
 }
+
 .news__item__subtitle {
   color: var(--Neutral-100, #fff);
   font-family: Onest;
@@ -312,7 +316,22 @@ export default {
   font-weight: 400;
   line-height: normal;
 }
+
 @media screen and (max-width: 600px) {
+  .news {
+    margin-top: 100px;
+  }
+  .news__head a span {
+    display: none;
+  }
+  .news__content {
+    gap: 4px;
+  }
+
+  .news__body {
+    gap: 36px;
+  }
+
   .news__tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -320,13 +339,15 @@ export default {
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
+
   .news__tabs::-webkit-scrollbar {
     display: none;
   }
+
   .news__tabs__item {
     white-space: nowrap;
     flex-shrink: 0;
   }
-  
+
 }
 </style>
