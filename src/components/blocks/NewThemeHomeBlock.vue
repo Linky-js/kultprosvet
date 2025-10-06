@@ -11,11 +11,20 @@ const prevEl = ref(null)
 const nextEl = ref(null)
 
 const swiperOptions = ref({
-  slidesPerView: 1,
+  slidesPerView: 'auto',
   spaceBetween: 20,
+  modules: modules,
   navigation: {
-    prevEl: null,
-    nextEl: null
+    prevEl: '.prevSlidenew',
+    nextEl: '.nextSlidenew',
+  },
+  breakpoints: {
+    1024: {
+      spaceBetween: 20
+    },
+    300: {
+      spaceBetween: 16
+    },
   }
 })
 onMounted(() => {
@@ -23,202 +32,168 @@ onMounted(() => {
   swiperOptions.value.navigation.nextEl = nextEl.value
 })
 
-import ban1 from "@/assets/image/muz-ban.png";
-import ban2 from "@/assets/image/ban2.png";
-import ban3 from "@/assets/image/ban3.png";
-import ban4 from "@/assets/image/ban4.png";
-import ban5 from "@/assets/image/ban5.png";
-import ban6 from "@/assets/image/ban6.png";
-import ban7 from "@/assets/image/ban7.png";
-import ban8 from "@/assets/image/ban8.png";
-import ban9 from "@/assets/image/ban9.png";
-import ban10 from "@/assets/image/ban10.png";
-import ban11 from "@/assets/image/ban11.png";
-import ban12 from "@/assets/image/ban12.png";
+import back1 from "@/assets/image/home-theme/back-1.png";
+import back2 from "@/assets/image/home-theme/back-2.png";
+import back3 from "@/assets/image/home-theme/back-3.png";
+import back4 from "@/assets/image/home-theme/back-4.png";
+import back5 from "@/assets/image/home-theme/back-5.png";
+import back6 from "@/assets/image/home-theme/back-6.png";
+import back7 from "@/assets/image/home-theme/back-7.png";
+import back8 from "@/assets/image/home-theme/back-8.png";
+import back9 from "@/assets/image/home-theme/back-9.png";
+import back10 from "@/assets/image/home-theme/back-10.png";
+import back11 from "@/assets/image/home-theme/back-11.png";
+import back12 from "@/assets/image/home-theme/back-12.png";
 
-import img1 from "@/assets/image/muz-img.png";
-import img2 from "@/assets/image/img2.png";
-import img3 from "@/assets/image/img3.png";
-import img4 from "@/assets/image/img4.png";
-import img5 from "@/assets/image/img5.png";
-import img6 from "@/assets/image/img6.png";
-import img7 from "@/assets/image/img7.png";
-import img8 from "@/assets/image/img8.png";
-import img9 from "@/assets/image/img9.png";
-import img10 from "@/assets/image/img10.png";
-import img11 from "@/assets/image/img11.png";
-import img12 from "@/assets/image/img12.png";
-
+import img1 from "@/assets/image/home-theme/human-1.png";
+import img2 from "@/assets/image/home-theme/human-2.png";
+import img3 from "@/assets/image/home-theme/human-3.png";
+import img4 from "@/assets/image/home-theme/human-4.png";
+import img5 from "@/assets/image/home-theme/human-5.png";
+import img6 from "@/assets/image/home-theme/human-6.png";
+import img7 from "@/assets/image/home-theme/human-7.png";
+import img8 from "@/assets/image/home-theme/human-8.png";
+import img9 from "@/assets/image/home-theme/human-9.png";
+import img10 from "@/assets/image/home-theme/human-10.png";
+import img11 from "@/assets/image/home-theme/human-11.png";
+import img12 from "@/assets/image/home-theme/human-12.png";
 const slides = [
   {
     id: 1,
-    background: ban1,
+    background: back1,
     head: "Музыка",
-    text: "— фиолетовый цвет. Фиолетовый цвет связан с духовностью, воображением и артистизмом, что соответствует музыкальной тематике.",
+    text: "Фиолетовый цвет связан с духовностью, воображением и артистизмом",
     img: img1,
     link: "/theme/4",
   },
   {
     id: 2,
-    background: ban2,
+    background: back2,
     head: "Лайф менеджмент",
-    text: "— зеленый цвет. Зеленый цвет символизирует гармонию, рост и развитие, что очень важно для лайф менеджмента.",
+    text: "Зеленый цвет символизирует гармонию, рост и развитие, что очень важно",
     img: img2,
     link: "/theme/1",
   },
   {
     id: 3,
-    background: ban3,
+    background: back3,
     head: "Наука",
-    text: "— синий цвет. Синий цвет ассоциируется с интеллектом, логикой и точностью, что соответствует научной тематике.",
+    text: "Синий цвет ассоциируется с интеллектом, логикой и точностью",
     img: img3,
     link: "/theme/2",
   },
   {
     id: 4,
-    background: ban4,
+    background: back4,
     head: "Литература",
-    text: "— оранжевый цвет. Оранжевый цвет олицетворяет творчество, вдохновение и эмоциональность, что характерно для литературы.",
+    text: "Синий цвет ассоциируется с интеллектом, логикой и точностью",
     img: img4,
     link: "/theme/3",
   },
   {
     id: 5,
-    background: ban5,
+    background: back5,
     head: "История ",
-    text: "— коричневый цвет. Коричневый цвет ассоциируется с традициями, стабильностью и опытом, что отражает суть истории.",
+    text: "Охра ассоциируется с традициями, стабильностью и опытом",
     img: img5,
     link: "/theme/5",
   },
   {
     id: 6,
-    background: ban6,
+    background: back6,
     head: "Архитектура",
-    text: "— серый цвет. Серый цвет символизирует гармонию, баланс и практичность, что важно для архитектурной тематики.",
+    text: "Серый цвет символизирует гармонию, баланс и практичность",
     img: img6,
     link: "/theme/6",
   },
   {
     id: 7,
-    background: ban7,
+    background: back7,
     head: "Живопись",
-    text: "— желтый цвет. Желтый цвет олицетворяет яркость, креативность и энергию, что характерно для живописи.",
+    text: "Желтый цвет олицетворяет яркость, креативность и энергию",
     img: img7,
     link: "/theme/7",
   },
   {
     id: 8,
-    background: ban8,
+    background: back8,
     head: "Кино",
-    text: "— красный цвет. Красный цвет ассоциируется с драмой, эмоциональностью и динамикой, что соответствует кинотематике.",
+    text: "Красный цвет ассоциируется с драмой, эмоциональностью и динамикой",
     img: img8,
     link: "/theme/8",
   },
   {
     id: 9,
-    background: ban9,
-    head: "Философия",
-    text: "— темно-синий цвет. символизирует глубину, мудрость и абстрактность, что отражает суть философии.",
+    background: back9,
+    head: "Спорт",
+    text: "Голубой цвет ассоциируется с энергией, динамикой и здоровым образом жизни",
     img: img9,
-    link: "/theme/9",
+    link: "/theme/12",
   },
   {
     id: 10,
-    background: ban10,
+    background: back10,
     head: "Мода",
-    text: "— розовый цвет. Розовый цвет ассоциируется с женственностью, изысканностью и творчеством, что характерно для модной тематики",
+    text: "Розовый цвет ассоциируется с женственностью, изысканностью и творчеством",
     img: img10,
     link: "/theme/10",
   },
   {
     id: 11,
-    background: ban11,
-    head: "Урбанистика",
-    text: "— цвет хаки. Цвет хаки ассоциируется с практичностью, прочностью и городской средой, что соответствует теме урбанистики.",
+    background: back11,
+    head: "Философия",
+    text: "Темно-синий цвет символизирует глубину, мудрость и абстрактность",
     img: img11,
-    link: "/theme/11",
+    link: "/theme/9",
   },
   {
     id: 12,
-    background: ban12,
-    head: "Спорт",
-    text: "— голубой цвет. Голубой цвет ассоциируется с энергией, динамикой и здоровым образом жизни, что отражает суть спортивной тематики.",
+    background: back12,
+    head: "Урбанистика",
+    text: "Бирюзовый ассоциируется с практичностью, прочностью и городской средой",
     img: img12,
-    link: "/theme/12",
+    link: "/theme/11",
   },
 ];
 </script>
 
 <template>
-  <div class="themeBlock">
+  <div class="theme">
     <div class="container">
-      <h2 class="head-h1">12 тем, которые прокачают тебя!</h2>
-    </div>
-    <div class="theme__slider">
-      <div class="arrowsSlide">
-        <div class="prevSlidenew arrow" ref="prevEl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="21"
-            height="12"
-            viewBox="0 0 21 12"
-            fill="none"
-          >
-            <path
-              d="M0.469669 5.46967C0.176777 5.76256 0.176777 6.23744 0.469669 6.53033L5.24264 11.3033C5.53553 11.5962 6.01041 11.5962 6.3033 11.3033C6.59619 11.0104 6.59619 10.5355 6.3033 10.2426L2.06066 6L6.3033 1.75736C6.59619 1.46447 6.59619 0.989593 6.3033 0.696699C6.01041 0.403806 5.53553 0.403806 5.24264 0.696699L0.469669 5.46967ZM21 5.25L1 5.25V6.75L21 6.75V5.25Z"
-              fill="white"
-            />
-          </svg>
-        </div>
-        <div class="nextSlidenew arrow" ref="nextEl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="21"
-            height="12"
-            viewBox="0 0 21 12"
-            fill="none"
-          >
-            <path
-              d="M20.5303 6.53033C20.8232 6.23744 20.8232 5.76256 20.5303 5.46967L15.7574 0.696699C15.4645 0.403806 14.9896 0.403806 14.6967 0.696699C14.4038 0.989593 14.4038 1.46447 14.6967 1.75736L18.9393 6L14.6967 10.2426C14.4038 10.5355 14.4038 11.0104 14.6967 11.3033C14.9896 11.5962 15.4645 11.5962 15.7574 11.3033L20.5303 6.53033ZM0 6.75L20 6.75V5.25L0 5.25L0 6.75Z"
-              fill="white"
-            />
-          </svg>
+      <div class="theme__head">
+        <h2 class="head-h1">12 тем, которые прокачают тебя!</h2>
+        <div class="arrowsSlide">
+          <div class="prevSlidenew arrow" ref="prevEl">
+            <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21.5 4H0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4 7.5L0.5 4L4 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="nextSlidenew arrow" ref="nextEl">
+            <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.5 4H21.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M18 7.5L21.5 4L18 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
         </div>
       </div>
-      <swiper
-        class="theme__swiper"
-        :slidesPerView="1"
-        :spaceBetween="20"
-        :modules="modules"
-        :navigation="{
-          enabled: true,
-          prevEl: '.prevSlidenew',
-          nextEl: '.nextSlidenew',
-        }"
-        v-bind="swiperOptions"
-      >
-        <swiper-slide
-          v-for="slide in slides"
-          :key="slide.id"
-          class="theme__item"
-        >
-          <div
-            class="slide__item"
-            :style="{
-              backgroundImage: `url(${slide.background})`,
-            }"
-          >
-            <div class="container">
-              <div class="slide__content">
-                <div class="head__slide">{{ slide.head }}</div>
-                <div class="text__slide">
-                  {{ slide.text }}
-                </div>
-                <router-link :to="slide.link" class="btn__slide">Перейти</router-link>
-                <img class="absolute slide__img" :src="slide.img" alt="" />
+      <swiper class="theme__swiper" v-bind="swiperOptions">
+        <swiper-slide v-for="slide in slides" :key="slide.id" :class="[`slide__${slide.id}`, 'slide__item']">
+          <router-link :to="slide.link" class="slide__link">
+            <div class="slide__item-head">
+              <div class="head__slide">{{ slide.head }}</div>
+              <div class="btn__slide">
+                <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M0.125 4.37446L11.74 4.37453L8.43306 1.06641L9.31694 0.182522L14.1339 4.99946L9.31694 9.81641L8.43306 8.93252L11.74 5.62453L0.125 5.62446L0.125 4.37446Z"
+                    fill="white" />
+                </svg>
               </div>
             </div>
-          </div>
+            <div class="text__slide">{{ slide.text }}</div>
+            <img class="slide__img" :src="slide.img" alt="" />
+            <img class="slide__back" :src="slide.background" alt="">
+          </router-link>
         </swiper-slide>
       </swiper>
     </div>
@@ -226,137 +201,353 @@ const slides = [
 </template>
 
 <style scoped>
-.themeBlock {
-  overflow: hidden;
+.theme {
   margin-top: 374px;
 }
+
+.theme__swiper {
+  overflow: visible;
+}
+
+.theme__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 36px;
+}
+
 .head-h1 {
   color: #333;
   font-family: Onest;
   font-size: 50px;
   font-style: normal;
   font-weight: 600;
-  line-height: 110%; /* 55px */
+  line-height: 110%;
+  /* 55px */
   letter-spacing: -1px;
   max-width: 616px;
-  margin-bottom: 20px;
 }
+
 .slide__item {
-  height: 550px;
+  max-width: 310px;
+  height: 380px;
+  position: relative;
+  background: #F0F2F2;
+  border-radius: 28px;
+  padding: 20px 20px 0 24px;
+  transition: .3s all;
+  overflow: hidden;
 }
-.container {
-  height: 100%;
+
+.slide__1:hover {
+  background: #6F54EA;
 }
-.slide__content {
+
+.slide__2:hover {
+  background: #5BBA46;
+}
+
+.slide__3:hover {
+  background: #4D88F7;
+}
+
+.slide__4:hover {
+  background: #FF5A37;
+}
+
+.slide__5:hover {
+  background: #986932;
+}
+
+.slide__6:hover {
+  background: #717786;
+}
+
+.slide__7:hover {
+  background: #F0A942;
+}
+
+.slide__8:hover {
+  background: #D2313E;
+}
+
+.slide__9:hover {
+  background: #1B6EBB;
+}
+
+.slide__10:hover {
+  background: #E54788;
+}
+
+.slide__11:hover {
+  background: #0C1843;
+}
+
+.slide__12:hover {
+  background: #416B71;
+}
+
+.slide__item:hover {
+  box-shadow: 0px 2px 12px 0px rgba(15, 22, 44, 0.2);
+}
+
+.slide__item:hover .head__slide {
+  color: #fff;
+}
+
+.slide__item:hover .text__slide {
+  color: #fff;
+  opacity: 1;
+}
+
+.slide__item:hover .btn__slide {
+  transform: rotate(-45deg);
+  background: transparent;
+}
+
+.slide__item:hover .slide__back {
+  opacity: 0.2;
+}
+
+.slide__item-head {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  height: 100%;
-  padding: 35px 0;
+  gap: 15px;
+  margin-bottom: 34px;
 }
-.slide__item {
-  background-position: center;
-  background-size: cover;
-}
+
+
 .slide__img {
   bottom: 0;
-  right: 154px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 2;
 }
+
+.slide__back {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  transition: .3s all;
+}
+
 .head__slide {
-  color: #fff;
-  font-family: Onest;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 110%; /* 35.2px */
-  letter-spacing: -0.64px;
-}
-.text__slide {
-  color: #fff;
+  color: #333333;
   font-family: Onest;
   font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  max-width: 464px;
-}
-.btn__slide {
-  color: #5f22c1;
-  text-align: center;
-  font-family: "Proxima Nova";
-  font-size: 20px;
-  font-style: normal;
   font-weight: 600;
-  line-height: 18px; /* 90% */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  padding: 15px 40px;
-  border-radius: 128px;
-  background: #fff;
-  border: 1px solid #fff;
-  width: max-content;
-  margin-top: auto;
-  transition: all 0.3s ease;
+  line-height: 110%;
+  transition: .3s all;
   position: relative;
   z-index: 2;
 }
-.btn__slide:hover {
-  border: 1px solid #5f22c1;
-  transform: scale(1.1);
-}
-.theme__slider{
-  position: relative;
 
+.text__slide {
+  color: #333333;
+  font-family: Onest;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  opacity: 0.8;
+  transition: .3s all;
+  position: relative;
+  z-index: 2;
 }
-.arrowsSlide{
-  position: absolute;
-  bottom: 35px;
-  right: 70px;
+
+.btn__slide {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: #000;
   display: flex;
   align-items: center;
-  gap: 20px;
-  z-index: 3;
+  justify-content: center;
+  transition: .3s all;
+  transform: rotate(0deg);
+  backdrop-filter: blur(30px);
+  position: relative;
+  z-index: 2;
 }
-.arrow{
+
+.slide__1 .btn__slide {
+  background: #6F54EA;
+}
+
+.slide__2 .btn__slide {
+  background: #5BBA46;
+}
+
+.slide__3 .btn__slide {
+  background: #4D88F7;
+}
+
+.slide__4 .btn__slide {
+  background: #FF5A37;
+}
+
+.slide__5 .btn__slide {
+  background: #986932;
+}
+
+.slide__6 .btn__slide {
+  background: #717786;
+}
+
+.slide__7 .btn__slide {
+  background: #F0A942;
+}
+
+.slide__8 .btn__slide {
+  background: #D2313E;
+}
+
+.slide__9 .btn__slide {
+  background: #1B6EBB;
+}
+
+.slide__10 .btn__slide {
+  background: #E54788;
+}
+
+.slide__11 .btn__slide {
+  background: #0C1843;
+}
+
+.slide__12 .btn__slide {
+  background: #416B71;
+}
+
+.theme__slider {
+  position: relative;
+}
+
+.arrowsSlide {
+  display: flex;
+  gap: 20px;
+}
+
+.arrow {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  border: 1px solid #fff;
+  border: 1px solid rgba(211, 211, 211, 1);
   cursor: pointer;
   transition: all 0.3s ease;
+  background: #fff;
 }
-.arrow:hover{
-  transform: scale(1.1);
+
+.arrow:hover {
+  background: rgba(95, 34, 193, 1);
 }
-.prevSlide{
-  transform: rotate(180deg);
+
+.arrow:hover path {
+  stroke: #fff;
 }
+
+
 @media screen and (max-width: 1024px) {
-  .slide__img {
-    max-width: 100%;
-    right: 0;
-    max-height: 395px;
+  .arrowsSlide {
+    display: none;
   }
-  .head__slide {
-    font-size: 18px;
-  }
-  .text__slide {
-    font-size: 16px;
-  }
-  .btn__slide {
-    font-size: 16px;
+  .theme__head {
+    margin-bottom: ;
   }
   .head-h1 {
     font-size: 24px;
   }
-  .themeBlock {
+  .theme {
     margin-top: 100px;
+  }
+  .slide__item {
+    max-width: 260px;
+    height: 320px;
+    padding: 14px 14px 0 20px;
+    box-shadow: 0px 2px 12px 0px rgba(15, 22, 44, 0.2);
+  }
+  .btn__slide {
+    transform: rotate(-45deg);
+    background: transparent;  
+    border-color: rgba(255, 255, 255, 0.5);
+    width: 32px;
+    height: 32px;
+  }
+  .btn__slide svg {
+    height: 6.74px;
+    width: 9.81px;
+  }
+  .slide__item-head {
+    margin-bottom: 50px;
+  }
+  .slide__1 {background: #6F54EA;}
+  .slide__2 {background: #5BBA46;}
+  .slide__3 {background: #4D88F7;}
+  .slide__4 {background: #FF5A37;}
+  .slide__5 {background: #986932;}
+  .slide__6 {background: #717786;}
+  .slide__7 {background: #F0A942;}
+  .slide__8 {background: #D2313E;}
+  .slide__9 {background: #1B6EBB;}
+  .slide__10 {background: #E54788;}
+  .slide__11 {background: #0C1843;}
+  .slide__12 {background: #416B71;}
+  .slide__back {
+    opacity: .3;
+  }
+  .head__slide {
+    font-size: 18px;
+    color: #fff;
+  }
+  .text__slide {
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+    font-size: 13px;
+  } 
+  .slide__1 .slide__img {
+    width: 148px;
+  }
+  .slide__2 .slide__img {
+    width: 204px;
+  }
+  .slide__3 .slide__img {
+    width: 209px; 
+  }
+  .slide__4 .slide__img {
+    width: 219px;
+    bottom: -35px;
+  }
+  .slide__5 .slide__img {
+    width: 165px;
+  }
+  .slide__6 .slide__img {
+    width: 242px;
+  }
+  .slide__7 .slide__img {
+    width: 190px;
+  }
+  .slide__8 .slide__img {
+    width: 215px;
+  }
+  .slide__9 .slide__img {
+    width: 164px;
+  }
+  .slide__10 .slide__img {
+    width: 297px;
+  }
+  .slide__11 .slide__img {
+    width: 176px;
+  }
+  .slide__12 .slide__img {
+    width: 208px;
   }
 }
 </style>

@@ -909,12 +909,12 @@ a.Урбанистика.active {
     color: #fff;
     text-align: center;
     font-family: "Proxima Nova";
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
     /* 90% */
-    padding: 15px 40px;
+    padding: 18px 40px;
     border-radius: 128px;
     background: #5f22c1;
     border: 1px solid #5f22c1;
@@ -928,11 +928,11 @@ a.Урбанистика.active {
     color: #5f22c1;
     text-align: center;
     font-family: "Proxima Nova";
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
-    padding: 15px 40px;
+    padding: 18px 40px;
     border-radius: 128px;
     background: #ffffff;
     border: 1px solid #5f22c1;

@@ -2,12 +2,12 @@
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { onMounted, ref, nextTick } from "vue";
-import main1 from "@/assets/image/speaker1.png";
-import main2 from "@/assets/image/speaker2.png";
-import main3 from "@/assets/image/speaker3.png";
-import main4 from "@/assets/image/speaker4.png";
-import main5 from "@/assets/image/speaker5.png";
-import main6 from "@/assets/image/speaker6.png";
+import main1 from "@/assets/image/speaker-1.jpg";
+import main2 from "@/assets/image/speaker-2.jpg";
+import main3 from "@/assets/image/speaker-3.jpg";
+import main4 from "@/assets/image/speaker-4.jpg";
+import main5 from "@/assets/image/speaker-5.jpg";
+import main6 from "@/assets/image/speaker-6.jpg";
 
 const speackers = [
   { id: 1, img: main1 },
@@ -276,6 +276,10 @@ onMounted(async () => {
   display: flex;
   width: 250px;
 }
+.speackers__item img {
+  border-radius: 20px;
+  box-shadow: 0px 3px 3.8px rgba(0, 0, 0, 0.1);
+}
 
 .speackers__item:nth-of-type(6) {
   z-index: 5;
@@ -317,11 +321,11 @@ onMounted(async () => {
   color: #fff;
   text-align: center;
   font-family: "Proxima Nova";
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: 18px; /* 90% */
-  padding: 15px 40px;
+  padding: 18px 40px;
   border-radius: 128px;
   background: #5f22c1;
   border: 1px solid #5f22c1;
@@ -334,11 +338,11 @@ onMounted(async () => {
   color: #5f22c1;
   text-align: center;
   font-family: "Proxima Nova";
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: 18px;
-  padding: 15px 40px;
+  padding: 18px 40px;
   border-radius: 128px;
   background: #ffffff;
   border: 1px solid #5f22c1;
