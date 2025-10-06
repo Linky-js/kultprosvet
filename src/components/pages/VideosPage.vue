@@ -145,11 +145,11 @@ export default {
           this.openAudios = response.data.videos;
           const podkastArray = response.data.videos;
           
-          podkastArray.forEach((podcast) => {
+          podkastArray.forEach((video) => {
             if (
-              !this.themes.some((theme) => theme.name === podcast.theme.name)
+              !this.themes.some((theme) => theme.name === video.theme.name)
             ) {
-              this.themes.push(podcast.theme);
+              this.themes.push(video.theme);
             }
           });
 
