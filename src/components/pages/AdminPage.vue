@@ -2,7 +2,8 @@
 import SideBarAdmin from "../blocks/SideBarAdmin.vue";
 import HeaderAdmin from "../blocks/HeaderAdmin.vue";
 import ListsBlock from "../blocks/ListsBlock.vue";
-import UniversalPage from "../blocks/UniversalPage.vue";
+// import UniversalPage from "../blocks/UniversalPage.vue";
+import UniversalAdminPage from "../UniversalAdminPage.vue";
 import MetrikaBlock from "../blocks/MetrikaBlock.vue";
 import router from "@/router/router";
 export default {
@@ -11,7 +12,8 @@ export default {
     SideBarAdmin,
     HeaderAdmin,
     ListsBlock,
-    UniversalPage,
+    // UniversalPage,
+    UniversalAdminPage,
     MetrikaBlock,
   },
   data() {
@@ -43,6 +45,8 @@ export default {
     goToCategory(item = false) {
       if (item) {
         this.itemPage = item;
+      } else {
+        this.itemPage = null;
       }
       this.list = false;
       this.updatePage = true;
@@ -53,7 +57,7 @@ export default {
           this.propsPage = "object";
           break;
         case "object-category":
-          this.propsPage = "object-category";
+          this.propsPage = "object1category";
           break;
         case "podcasts":
           this.propsPage = "podcast";
@@ -64,20 +68,23 @@ export default {
         case "video":
           this.propsPage = "video";
           break;
+        case "video-banner":
+          this.propsPage = "video1banner";
+          break;
         case "podcast-category":
-          this.propsPage = "podcast-category";
+          this.propsPage = "podcast1category";
           break;
         case "news-category":
-          this.propsPage = "news-category";
+          this.propsPage = "news1category";
           break;
         case "video-category":
-          this.propsPage = "video-category";
+          this.propsPage = "video1category";
           break;
         case "book-category":
-          this.propsPage = "book-category";
+          this.propsPage = "book1category";
           break;
         case "test-category":
-          this.propsPage = "test-category";
+          this.propsPage = "test1category";
           break;
         case "material":
           this.propsPage = "material";
@@ -126,8 +133,9 @@ export default {
       <metrika-block v-if="propsPage == 'metrika'" />
       <ListsBlock v-if="list && propsPage != 'metrika'" @goToCategory="goToCategory" :propsPage="propsPage"
         :type="typePage" />
-      <UniversalPage v-if="updatePage && !itemPage && propsPage != 'metrika'" :propsPage="propsPage" />
-      <UniversalPage v-if="updatePage && itemPage && propsPage != 'metrika'" :propsPage="propsPage" :item="itemPage" />
+      <!-- <UniversalPage v-if="updatePage && !itemPage && propsPage != 'metrika'" :propsPage="propsPage" />
+      <UniversalPage v-if="updatePage && itemPage && propsPage != 'metrika'" :propsPage="propsPage" :item="itemPage" /> -->
+      <UniversalAdminPage v-if="updatePage && propsPage != 'metrika'" :entity="propsPage" :initialData="itemPage" />
     </div>
   </div>
 </template>

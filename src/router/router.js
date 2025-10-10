@@ -7,7 +7,7 @@ import HomePage from '@/components/pages/HomePage.vue';
 import NewsPage from '@/components/pages/NewsPage.vue';
 import PostPage from '@/components/pages/PostPage.vue';
 import ErrorPage from '@/components/pages/ErrorPage.vue';
-import VideosPage from '@/components/pages/VideosPage.vue';
+import VideosPage from '@/components/pages/NewVideosPage.vue';
 import PodkastsPage from '@/components/pages/PodkastsPage.vue';
 import ThemePage from '@/components/pages/ThemePage.vue';
 import ContactsPage from '@/components/pages/ContactsPage.vue';

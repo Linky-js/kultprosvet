@@ -11,7 +11,7 @@ import VCalendar from "v-calendar";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import "v-calendar/style.css";
-import Koordinates from "../elements/KoordinatesVal.vue";
+import Koordinates from "./form/KoordinatesVal.vue";
 import DragImages from "../elements/DragImages.vue";
 
 import TestElement from "../elements/TestElement.vue";
@@ -218,13 +218,10 @@ export default {
     },
     async handleImageUpload(event) {
       try {
-        // Вызов вашего метода для загрузки фото
         await this.uploadPhoto(event, false, false, false, true);
 
-        // Получаем URL загруженного изображения
         const imageUrl = this.formData.image;
 
-        // Вставляем изображение в редактор
         this.editor
           .chain()
           .focus()
@@ -1013,8 +1010,8 @@ export default {
       <input type="text" v-model="formData.slag" value="{{itemData?.slag || itemData?.slag}}"
         placeholder="Введите слаг на англ.яз" />
     </div>
-    <Koordinates v-model:lat="formData.lat" v-model:lon="formData.lon" />
-    <div class="form-group">
+    <Koordinates v-if="propsPage == 'object'" v-model:lat="formData.lat" v-model:lon="formData.lon" />
+    <div v-if="propsPage == 'object'" class="form-group">
       <label for="title">Тег (может быть 1 тег)</label>
       <input type="text" v-model="formData.tag" value="{{itemData?.slag || itemData?.slag}}"
         placeholder="введите теги" />
@@ -1034,7 +1031,7 @@ export default {
         value="{{itemData?.description || itemData?.short_text}}" rows="5"></textarea>
     </div>
     <!-- Поле для загрузки изображения -->
-    <DragImages v-model="formData.images" :multiple="true" @remove-image="handleImageRemove" />
+    <DragImages v-if="propsPage == 'object'" v-model="formData.images" :multiple="true" @remove-image="handleImageRemove" />
     <div v-if="propsPage === 'theme'" class="form-group">
       <label for="image">Баннер страницы темы Шапка</label>
       <input accept=".jpg,.jpeg,.png,.gif,.webp,.svg" type="file" id="headerBanner"
@@ -1108,10 +1105,6 @@ export default {
     <div v-if="propsPage != 'test'" class="form-group">
       <label for="text">Краткое описание</label>
       <textarea v-model="formData.shortText" placeholder="Введите текст" rows="5"></textarea>
-      <!-- <quill-editor
-        v-model="state.content"
-        
-      /> -->
     </div>
     <!-- Текстовое поле или редактор текста -->
     <div v-if="formData.type === 'news'" class="form-group">

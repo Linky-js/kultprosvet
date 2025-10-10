@@ -26,6 +26,7 @@ export default {
             { name: "Категории видео", category: "video-category" },
             { name: "Все видео", category: "video" },
             { name: "Блогеры", category: "blogger" },
+            { name: "Банеры", category: "video-banner" },
           ],
           open: false,
         },

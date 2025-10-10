@@ -32,6 +32,7 @@ export default createStore({
             city: "Москва",
             id: 605,
         },
+
     },
     mutations: {
         setUser(state, user) {
@@ -41,7 +42,6 @@ export default createStore({
             state.local = local
         },
         setUserData(state, user) {
-
             if (user.id) { state.user.user_id = user.id }
             if (user.username) { state.user.username = user.username }
             if (user.auth_key) { state.user.auth_key = user.auth_key }

@@ -1,65 +1,74 @@
-<script>
-export default {
-  name: "TestElement",
-  props: {
-    initialTestData: {
-      type: Object,
-      required: false,
-    },
+<script setup>
+import { reactive, watch, onMounted, defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    required: false,
+    default: () => ({
+      name: '',
+      description: '',
+      questions: [
+        {
+          question: '',
+          answers: [{ text: '', points: 0 }],
+        },
+      ],
+    }),
   },
-  data() {
-    return {
-      testData: {
-        name: "",
-        description: "",
-        questions: [
-          {
-            question: "",
-            answers: [{ text: "", points: 0 }],
-          },
-        ],
-      },
-    };
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+// Локальное состояние теста
+const testData = reactive(JSON.parse(JSON.stringify(props.modelValue)));
+
+// Следим за изменениями и пробрасываем вверх через v-model
+watch(
+  testData,
+  (newVal) => {
+    emit('update:modelValue', newVal);
   },
-  methods: {
-    addQuestion() {
-      this.testData.questions.push({
-        question: "",
-        answers: [{ text: "", points: 0 }],
-      });
-    },
-    removeQuestion(index) {
-      this.testData.questions.splice(index, 1);
-    },
-    addAnswer(questionIndex) {
-      this.testData.questions[questionIndex].answers.push({
-        text: "",
-        points: 0,
-      });
-    },
-    removeAnswer(questionIndex, answerIndex) {
-      this.testData.questions[questionIndex].answers.splice(answerIndex, 1);
-    },
-    saveTest() {
-      // Передаем данные теста родительскому компоненту
-      this.$emit("save", this.testData);
-    },
-  },
-  mounted() {
-    
-    if (
-      (this.initialTestData != null && this.initialTestData != undefined,
-      this.initialTestData != "" && this.initialTestData)
-    ) {
-      this.testData = this.initialTestData;
-    }
-  },
-};
+  { deep: true }
+);
+
+// Методы управления вопросами и ответами
+function addQuestion() {
+  testData.questions.push({
+    question: '',
+    answers: [{ text: '', points: 0 }],
+  });
+}
+
+function removeQuestion(index) {
+  testData.questions.splice(index, 1);
+}
+
+function addAnswer(questionIndex) {
+  testData.questions[questionIndex].answers.push({
+    text: '',
+    points: 0,
+  });
+}
+
+function removeAnswer(questionIndex, answerIndex) {
+  testData.questions[questionIndex].answers.splice(answerIndex, 1);
+}
+
+function saveTest() {
+  emit('update:modelValue', testData);
+}
+
+onMounted(() => {
+  if (props.modelValue && Object.keys(props.modelValue).length > 0) {
+    Object.assign(testData, props.modelValue);
+  }
+});
 </script>
 
 <template>
   <div class="test">
-    <h2>{{ testData.name || "Создать тест" }}</h2>
+    <h2>{{ testData.name || 'Создать тест' }}</h2>
 
     <div class="form-group">
       <label>Название теста:</label>
@@ -101,21 +110,26 @@ export default {
           </div>
           <div class="form-group">
             <label>Баллы:</label>
-            <input v-model="answer.points" type="number" />
+            <input v-model.number="answer.points" type="number" />
           </div>
         </div>
-        <button @click="removeAnswer(qIndex, aIndex)">Удалить ответ</button>
+        <button type="button" @click="removeAnswer(qIndex, aIndex)">
+          Удалить ответ
+        </button>
       </div>
 
-      <button @click="addAnswer(qIndex)">Добавить ответ</button>
-      <button @click="removeQuestion(qIndex)">Удалить вопрос</button>
+      <button type="button" @click="addAnswer(qIndex)">
+        Добавить ответ
+      </button>
+      <button type="button" @click="removeQuestion(qIndex)">
+        Удалить вопрос
+      </button>
     </div>
 
-    <button @click="addQuestion">Добавить вопрос</button>
-    <button @click="saveTest">Сохранить тест</button>
+    <button type="button" @click="addQuestion">Добавить вопрос</button>
+    <button type="button" @click="saveTest">Сохранить тест</button>
   </div>
 </template>
-  
 
   
   <style scoped>

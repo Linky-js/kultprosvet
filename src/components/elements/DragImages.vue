@@ -1,23 +1,29 @@
 <script setup>
 import { ref, watch, defineProps, defineEmits } from 'vue'
 import vuedraggable from 'vuedraggable'
+import { useStore } from 'vuex'
+const store = useStore();
+const apiDomain = store.getters.getApiDomain;
 
 const props = defineProps({
   modelValue: {
-    type: Array,
+    type: [Array, Object, String],
     default: () => [],
   },
-  multiple: Boolean, // исправил тип на Boolean
+  multiple: {
+    type: Boolean,
+    default: true,
+  },
 })
+
+const emit = defineEmits(['update:modelValue', 'removeImage'])
 
 const fileInput = ref(null)
 const isDragActive = ref(false)
 const images = ref([])
 const skipNextUpdate = ref(false)
 
-const emit = defineEmits(['update:modelValue', 'removeImage'])
-
-// Синхронизация с внешним modelValue
+// --- Синхронизация с родителем ---
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -25,84 +31,88 @@ watch(
       skipNextUpdate.value = false
       return
     }
-    images.value = [...newValue]
+
+    if (!props.multiple) {
+      // В режиме одного фото ожидаем строку или объект
+      if (!newValue) images.value = []
+      else if (typeof newValue === 'string') {
+        images.value = [{ id: Date.now(), url: newValue, isExisting: true }]
+      } else if (newValue.url) {
+        images.value = [newValue]
+      }
+    } else {
+      images.value = Array.isArray(newValue) ? [...newValue] : []
+    }
   },
   { immediate: true, deep: true }
 )
 
-// Обновляем родительский компонент при изменениях
 watch(
   images,
   (newImages) => {
     skipNextUpdate.value = true
-    emit('update:modelValue', [...newImages])
+    if (!props.multiple) {
+      emit('update:modelValue', newImages[0] || null)
+    } else {
+      emit('update:modelValue', [...newImages])
+    }
   },
   { deep: true }
 )
 
-// Открыть диалог выбора файлов
-const triggerFileInput = () => {
-  fileInput.value.click()
-}
+// --- Методы ---
+const triggerFileInput = () => fileInput.value.click()
 
-// Обработчик выбора файлов
 const handleFileUpload = (event) => {
   processFiles([...event.target.files])
 }
 
-// Обработчик перетаскивания файлов
 const handleDrop = (e) => {
   e.preventDefault()
   isDragActive.value = false
   processFiles([...e.dataTransfer.files])
 }
 
-// Преобразование файлов в объекты с превью
 const processFiles = (files) => {
   files.forEach((file) => {
     if (!file.type.match('image.*')) return
 
     const reader = new FileReader()
     reader.onload = (e) => {
-      images.value.push({
+      const newImg = {
         id: Date.now() + Math.random(),
-        url: e.target.result,
-        file: file,
-        isExisting: false, // добавляем флаг для новых файлов
-      })
+        dataurl: e.target.result,
+        file,
+        isExisting: false,
+      }
+
+      if (!props.multiple) {
+        images.value = [newImg]
+      } else {
+        images.value.push(newImg)
+      }
     }
     reader.readAsDataURL(file)
   })
 }
 
-// Удаление изображения
 const removeImage = (image) => {
-  // Отправляем событие в родительский компонент
   emit('removeImage', image)
-
-  // Удаляем изображение из локального состояния
   images.value = images.value.filter((img) => img.id !== image.id)
 }
 
-// Стили для области перетаскивания
-const dragOver = (e) => {
-  e.preventDefault()
-}
-
-const dragEnter = () => {
-  isDragActive.value = true
-}
-
-const dragLeave = () => {
-  isDragActive.value = false
-}
+// Drag state
+const dragOver = (e) => e.preventDefault()
+const dragEnter = () => (isDragActive.value = true)
+const dragLeave = () => (isDragActive.value = false)
 </script>
 
 <template>
   <div>
-    <!-- Кнопка для выбора файлов -->
-    <button @click="triggerFileInput" class="btn-white">Добавить изображение</button>
-    <!-- Скрытый input -->
+    <button @click="triggerFileInput" class="btn-white">
+      {{ multiple ? 'Добавить изображения ' : 'Выбрать изображение' }}
+    </button>
+    {{ images }}
     <input
       type="file"
       ref="fileInput"
@@ -112,7 +122,6 @@ const dragLeave = () => {
       style="display: none"
     />
 
-    <!-- Область для перетаскивания -->
     <div
       class="drop-zone"
       @dragover.prevent="dragOver"
@@ -121,15 +130,27 @@ const dragLeave = () => {
       @dragleave="dragLeave"
       :class="{ 'drag-active': isDragActive }"
     >
-      <!-- Вывод изображений с vuedraggable -->
-      <vuedraggable v-model="images" item-key="id" @start="drag = true" @end="drag = false">
+      <!-- Множественный режим -->
+      <vuedraggable
+        v-if="multiple"
+        v-model="images"
+        item-key="id"
+        @start="drag = true"
+        @end="drag = false"
+      >
         <template #item="{ element }">
           <div class="image-item">
-            <img :src="element.url" :alt="element.name" />
-            <button @click="removeImage(element)" class="remove-btn">x</button>
+            <img :src="apiDomain + 'web/uploads/' + element?.url.img" alt="" />
+            <button @click="removeImage(element)" class="remove-btn">×</button>
           </div>
         </template>
       </vuedraggable>
+      
+      <div v-else class="single-image">
+        <img :src="images[0]?.dataurl || apiDomain + 'web/uploads/' + images[0]?.url" alt="" />
+        <button @click="removeImage(images[0])" class="remove-btn">×</button>
+      </div>
+
       <p v-if="!images.length">Перетащите изображение сюда</p>
     </div>
   </div>
@@ -196,5 +217,8 @@ const dragLeave = () => {
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+.single-image{
+  position: relative;
 }
 </style>
