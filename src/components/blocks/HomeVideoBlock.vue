@@ -1,99 +1,113 @@
-<script>
+<script setup>
+import { ref, onMounted, defineProps, defineEmits } from "vue";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/vue";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import axios from "axios";
-
+import { Navigation, Pagination } from "swiper/modules";
 import PopupVideo from "../elements/PopupVideo.vue";
-export default {
-  name: "HomeVideoBlock",
-  components: {
-    PopupVideo,
-    Swiper,
-    SwiperSlide,
-  },
-  data() {
-    return {
-      videoPosts: [],
-      isPlaying: false,
-      timeline: null,
-      user: this.$store.getters.getUser,
-      apiUrl: this.$store.getters.getApiUrl,
-      apiDomain: this.$store.getters.getApiDomain,
-      iframe: null,
-      popupShow: false,
-      displayCount: 4,
-    };
-  },
-  methods: {
-    getContent() {
-      let authGet = `&auth=${this.user.username}:${this.user.auth_key}`;
 
-      axios
-        .get(this.apiUrl + "api-video/get-list/" + authGet + "&limit=5")
-        .then((response) => {
-          this.videoPosts = response.data.videos;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    togglePlay(iframe) {
-      this.popupShow = true;
-      this.iframe = iframe;
-    },
-    closePopup() {
-      this.popupShow = false;
-      this.iframe = null;
-    },
-    truncate(text, maxLength) {
-      let mobile = window.innerWidth < 1024;
-      if (mobile) {
-        maxLength = 28;
-      }
-      if (!text) return "";
-      return text.length > maxLength
-        ? text.substring(0, maxLength) + "..."
-        : text;
-    },
+import { useStore } from "vuex";
+const store = useStore();
+const emit = defineEmits(["searchvideobytheme"]);
+
+const videoPosts = ref([]);
+const popupShow = ref(false);
+const iframe = ref(null);
+const timeline = ref(null);
+
+const props = defineProps({
+  category: {
+    type: Object,
+    required: false,
+    default: () => ({
+      id: 0,
+      type: "full",
+      title: "full"
+    })
   },
-  mounted() {
-    this.getContent();
-    gsap.registerPlugin(ScrollTrigger);
-    this.timeline = gsap.timeline();
-    let posts = document.querySelectorAll(".post__content");
-    posts.forEach((post) => {
-      this.timeline.fromTo(
-        post,
-        { y: "50%", opacity: 0.2 },
-        {
-          opacity: 1,
-          y: 0,
-          scrollTrigger: {
-            trigger: post,
-            start: "top bottom",
-            end: "+=200",
-            scrub: 2,
-          },
-        }
-      );
-    });
-    const script = document.createElement("script");
-    script.src = "https://vk.com/js/api/videoplayer.js";
-    document.head.appendChild(script);
-  },
+
+});
+
+const user = store.getters.getUser;
+const apiUrl = store.getters.getApiUrl;
+const apiDomain = store.getters.getApiDomain;
+const modules = [Navigation, Pagination];
+// === methods ===
+const getContent = async () => {
+  const authGet = `&auth=${user.username}:${user.auth_key}`;
+  try {
+    let link = `${apiUrl}api-video/get-list/${authGet}&limit=5`
+    if (props.category.title !== "full") link += `&${props.category.type}_id=${props.category.id}`
+    const response = await axios.get(link);
+    videoPosts.value = response.data.videos;
+    console.log("videoPosts", videoPosts.value);
+
+  } catch (error) {
+    console.error("Ошибка при загрузке видео:", error);
+  }
 };
+
+const togglePlay = (iframeSrc) => {
+  popupShow.value = true;
+  iframe.value = iframeSrc;
+};
+
+const closePopup = () => {
+  popupShow.value = false;
+  iframe.value = null;
+};
+
+const truncate = (text, maxLength) => {
+  const mobile = window.innerWidth < 1024;
+  if (mobile) maxLength = 28;
+  if (!text) return "";
+  return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+};
+
+// === lifecycle ===
+onMounted(() => {
+  getContent();
+
+  gsap.registerPlugin(ScrollTrigger);
+  timeline.value = gsap.timeline();
+
+  const posts = document.querySelectorAll(".post__content");
+  posts.forEach((post) => {
+    timeline.value.fromTo(
+      post,
+      { y: "50%", opacity: 0.2 },
+      {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: post,
+          start: "top bottom",
+          end: "+=200",
+          scrub: 2,
+        },
+      }
+    );
+  });
+
+  // подключаем VK player
+  const script = document.createElement("script");
+  script.src = "https://vk.com/js/api/videoplayer.js";
+  document.head.appendChild(script);
+});
 </script>
+
 
 <template>
   <div class="home__video mBlock">
     <div class="container">
       <div class="home__video__wrapper">
-        <div class="home__video-head">
+        <div v-if="props.category.title === 'full'" class="home__video-head">
           <div class="head-h1">Видео – учись быстро и интересно!</div>
           <div class="arrows">
             <div class="arrow arrow__prev">
@@ -108,6 +122,19 @@ export default {
                 <path d="M18 7.5L21.5 4L18 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </div>
+          </div>
+
+        </div>
+        <div v-else class="home__video-head">
+          <div class="head-h2">
+            {{ props.category.name }}
+          </div>
+          <div @click="emit('searchvideobytheme', props.category)" class="link_all" to="/news"><span>Смотреть еще</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </div>
         </div>
         <swiper class="posts" :slidesPerView="'auto'" :spaceBetween="20" @swiper="onSwiper" :modules="modules"
@@ -128,7 +155,7 @@ export default {
             </div>
             <div class="post__content">
               <h3 class="headPost">
-                {{ truncate(v.title, 65) }}
+                {{ truncate(v.title, 40) }}
               </h3>
               <div class="post__content-list">
                 <p>{{ v.category.name }}</p>
@@ -147,6 +174,18 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.link_all {
+  color: rgba(51, 51, 51, 1);
+  font-size: 14px;
+  line-height: 18px;
+  font-family: 'Proxima Nova';
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .arrow {
@@ -174,7 +213,7 @@ export default {
 }
 
 .home__video {
-  margin-top: 170px;
+  margin-top: 130px;
 }
 
 .home__video-head {
@@ -295,10 +334,12 @@ export default {
   background: #fff;
   border-radius: 50%;
 }
+
 .video__play svg {
   position: relative;
   z-index: 1;
 }
+
 .video__play::after {
   top: -7px;
   width: 58px;
@@ -321,22 +362,27 @@ export default {
   .post {
     width: 310px;
   }
+
   .post .video {
     height: 200px;
     border-radius: 16px;
     margin-bottom: 12px;
   }
+
   .post .video::after {
     content: none;
   }
+
   .video__play {
     width: 36px;
     height: 36px;
   }
+
   .video__play svg {
     width: 16px;
     height: 16px;
   }
+
   .video__play::after {
     width: 48px;
     height: 48px;
@@ -347,17 +393,21 @@ export default {
     font-size: 24px;
     line-height: 110%;
   }
+
   .headPost {
     font-size: 16px;
     line-height: 120%;
     margin-bottom: 8px;
   }
+
   .home__video__wrapper {
     gap: 36px;
   }
+
   .post__content-list p {
     font-size: 11px;
   }
+
   .home__video {
     margin-top: 100px;
   }
