@@ -859,7 +859,7 @@ export default {
   }
 
   .header__link {
-    padding: 16px 17px;
+    padding: 13px 17px;
     background: #6927D2;
     border-radius: 12px;
     position: relative;
@@ -911,7 +911,9 @@ export default {
 @media screen and (max-width: 650px) {
   .header__nav {
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
+    overflow-y: auto;
   }
 }
 </style>

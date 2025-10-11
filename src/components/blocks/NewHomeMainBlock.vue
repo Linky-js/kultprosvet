@@ -35,7 +35,7 @@ const text2 = ref("и просвещения школьников и подро�
 onMounted(async () => {
   mobile.value = window.innerWidth < 1024;
   console.log(mobile.value);
-  
+
   if (mobile.value) {
     return;
   } else {
@@ -194,11 +194,7 @@ onMounted(async () => {
           </div>
         </div>
         <div v-else class="speackers">
-          <div
-            class="speackers__item"
-            v-for="item in mobSpeackers"
-            :key="item.id"
-          >
+          <div class="speackers__item" v-for="item in mobSpeackers" :key="item.id">
             <img :src="item.img" alt="" />
           </div>
         </div>
@@ -216,21 +212,17 @@ onMounted(async () => {
       </div>
       <div class="theme__content">
         <div class="head-theme">
-          <span>Лайф-менеджмент</span> — умей управлять собой, временем и
-          ресурсами!
+          Вводный курс по истории искусств и мировой архитектуры — <span>смотри на мир шире!</span>
         </div>
         <div class="text">
-          Как на тебя влияют сверстники? Почему деньги так быстро заканчиваются?
-          Как легче усваивать информацию? <br />
-          Видео, статьи, подкасты и тесты – все, чтобы ты стал увереннее и
-          разобрался, как управлять своей жизнью.
+          Узнавай, как создавались великие шедевры, почему здания становятся символами эпохи, а картины — голосом
+          времени. <br>
+
+          Видео, статьи, подкасты и тесты — всё, чтобы ты вдохновился, удивился и открыл для себя мир искусства и
+          архитектуры по-новому.
         </div>
         <div v-if="mobile" class="speackers dop">
-          <div
-            class="speackers__item"
-            v-for="item in mobSpeackers2"
-            :key="item.id"
-          >
+          <div class="speackers__item" v-for="item in mobSpeackers2" :key="item.id">
             <img :src="item.img" alt="" />
           </div>
         </div>
@@ -246,6 +238,7 @@ onMounted(async () => {
 .main {
   padding-top: 87px;
 }
+
 .head-h1 {
   color: #333;
   text-align: center;
@@ -253,7 +246,8 @@ onMounted(async () => {
   font-size: 50px;
   font-style: normal;
   font-weight: 600;
-  line-height: 110%; /* 55px */
+  line-height: 110%;
+  /* 55px */
   letter-spacing: -1px;
   display: flex;
   flex-wrap: wrap;
@@ -261,21 +255,25 @@ onMounted(async () => {
   max-width: 1000px;
   overflow: hidden;
 }
+
 .head-title {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .speackers {
   display: flex;
   justify-content: center;
   margin-top: 70px;
 }
+
 .speackers__item {
   margin-right: -50px;
   display: flex;
   width: 250px;
 }
+
 .speackers__item img {
   border-radius: 20px;
   box-shadow: 0px 3px 3.8px rgba(0, 0, 0, 0.1);
@@ -284,6 +282,7 @@ onMounted(async () => {
 .speackers__item:nth-of-type(6) {
   z-index: 5;
 }
+
 .main__description {
   display: flex;
   flex-direction: column;
@@ -291,6 +290,7 @@ onMounted(async () => {
   gap: 40px;
   margin-top: 40px;
 }
+
 .text {
   color: #333;
   font-family: Onest;
@@ -300,19 +300,23 @@ onMounted(async () => {
   line-height: normal;
   max-width: 629px;
 }
+
 .main__content {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .main__content .text {
   text-align: center;
 }
+
 .buttons {
   display: flex;
   justify-content: center;
   gap: 20px;
 }
+
 .whiollet {
   display: flex;
   align-items: center;
@@ -324,12 +328,14 @@ onMounted(async () => {
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
-  line-height: 18px; /* 90% */
+  line-height: 18px;
+  /* 90% */
   padding: 18px 40px;
   border-radius: 128px;
   background: #5f22c1;
   border: 1px solid #5f22c1;
 }
+
 .white {
   display: flex;
   align-items: center;
@@ -347,15 +353,18 @@ onMounted(async () => {
   background: #ffffff;
   border: 1px solid #5f22c1;
 }
+
 .theme__content {
   display: flex;
   flex-direction: column;
   gap: 40px;
   padding-top: 280px;
 }
+
 .theme__content .text {
   max-width: 490px;
 }
+
 .head-theme {
   color: #a5a5a5;
   font-family: Onest;
@@ -366,57 +375,72 @@ onMounted(async () => {
   letter-spacing: -0.8px;
   max-width: 548px;
 }
+
 .head-theme span {
   color: #333;
 }
+
 .theme__content .buttons {
   justify-content: flex-start;
 }
+
 @media screen and (max-width: 1024px) {
-  .speackers__item{
+  .speackers__item {
     width: 150px;
     height: 150px;
   }
-  .head-h1{
+
+  .head-h1 {
     font-size: 24px;
   }
-  .speackers__item:nth-of-type(1){
+
+  .speackers__item:nth-of-type(1) {
     transform: rotate(-6deg);
   }
-  .speackers__item:nth-of-type(2){
+
+  .speackers__item:nth-of-type(2) {
     transform: rotate(2deg);
     margin-top: 46px;
   }
-  .speackers__item:nth-of-type(3){
+
+  .speackers__item:nth-of-type(3) {
     transform: rotate(10deg);
     margin-top: 96px;
   }
-  .buttons{
+
+  .buttons {
     flex-direction: column;
     gap: 10px;
     width: 100%;
   }
-  .buttons *{
+
+  .buttons * {
     width: 100%;
     font-size: 18px;
   }
-  .text{
+
+  .text {
     font-size: 16px;
   }
-  .main__description{
+
+  .main__description {
     gap: 20px;
   }
-  .theme__content{
+
+  .theme__content {
     padding-top: 100px;
     gap: 20px;
   }
-  .head-theme{
+
+  .head-theme {
     font-size: 24px;
   }
-  .dop .speackers__item{
+
+  .dop .speackers__item {
     transform: rotate(0);
   }
-  .speackers{
+
+  .speackers {
     justify-content: flex-start;
     width: 100%;
   }
