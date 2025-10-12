@@ -218,7 +218,7 @@ onMounted(() => {
 
 .home__video-head {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 15px;
 }
@@ -355,6 +355,9 @@ onMounted(() => {
 }
 
 @media screen and (max-width: 1024px) {
+  .link_all span {
+    display: none;
+  }
   .arrows {
     display: none;
   }
@@ -409,7 +412,7 @@ onMounted(() => {
   }
 
   .home__video {
-    margin-top: 100px;
+    margin-top: 20px;
   }
 }
 </style>

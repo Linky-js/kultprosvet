@@ -1,7 +1,7 @@
 <script setup>
 import HeaderBlock from '../blocks/HeaderBlock.vue';
 import NewVideoBanner from '../elements/NewVideoBanner.vue';
-import Bloggers from '../elements/Bloggers.vue';
+import Bloggers from '../elements/BloggersBlock.vue';
 import HomeVideoBlock from '../blocks/HomeVideoBlock.vue';
 import SubscribeBlock from '../blocks/SubscribeBlock.vue';
 import FooterBlock from '../blocks/FooterBlock.vue';
@@ -170,7 +170,7 @@ async function getSearchByCategoryTheme(item, type) {
     console.log('videos', videos.value);
     showReset.value = true;
     searchFlag.value = true;
-     window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (error) {
     console.error('Ошибка при загрузке тем:', error);
   }
@@ -320,6 +320,7 @@ onMounted(() => {
   border: 1px solid;
   width: max-content;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .менеджмент {
@@ -422,13 +423,13 @@ onMounted(() => {
 }
 
 .search_content-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
 .search_content-item {
-  width: calc(33% - 10px);
+  width: 100%;
 }
 
 .descrition {
@@ -459,4 +460,38 @@ onMounted(() => {
   font-weight: 600;
   margin-bottom: 36px;
 }
+@media screen and (max-width: 1024px) {
+  .videos {
+    margin-top: 57px;
+  }
+  .themes {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .themes::-webkit-scrollbar {
+    display: none;
+  }
+  .search_content-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .title {
+    font-size: 26px;
+    margin-bottom: 24px;
+  }
+  .descrition {
+    text-align: center;
+  }
+  .oups {
+    padding: 88px 0;
+  }
+  .oups svg {
+    width: 204px;
+    height: 204px;
+  }
+}
+@media screen and (max-width: 650px) {
+  .search_content-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+} 
 </style>

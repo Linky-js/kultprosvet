@@ -319,7 +319,7 @@ export default {
 
 @media screen and (max-width: 600px) {
   .news {
-    margin-top: 100px;
+    margin-top: 60px;
   }
   .news__head a span {
     display: none;

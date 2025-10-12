@@ -15,7 +15,7 @@ const props = defineProps({
   banners: {
     type: Array,
     required: true
-  } 
+  }
 });
 
 const emit = defineEmits(["searchvideobytheme"]);
@@ -54,11 +54,9 @@ const modules = [Navigation, Pagination];
           </svg>
         </div>
       </div>
-      <Swiper :slidesPerView="1" :spaceBetween="20" :loop="false" 
-      :modules="modules"
-       :navigation="{ nextEl: '.arrow-next', prevEl: '.arrow-prev' }"
-        :pagination="{ el: '.banner-pagination', clickable: true }"
-      >
+      <Swiper :slidesPerView="1" :spaceBetween="20" :loop="false" :modules="modules"
+        :navigation="{ nextEl: '.arrow-next', prevEl: '.arrow-prev' }"
+        :pagination="{ el: '.banner-pagination', clickable: true }">
         <SwiperSlide v-for="item in props.banners" :key="item.id" class="swiper_slide">
           <img :src="apiDomain + 'web/uploads/' + item.filename" alt="" />
           <div class="banner__info">
@@ -83,7 +81,7 @@ const modules = [Navigation, Pagination];
             </div>
           </div>
         </SwiperSlide>
-        
+
       </Swiper>
     </div>
   </div>
@@ -114,6 +112,7 @@ const modules = [Navigation, Pagination];
   border-radius: 16px;
   background: #F3F3F3;
   overflow: hidden;
+  cursor: default;
 }
 
 .swiper_slide img {
@@ -158,47 +157,82 @@ const modules = [Navigation, Pagination];
   backdrop-filter: blur(10px);
   padding: 10px 16px 8px 16px;
 }
-.banner__title{
+
+.banner__title {
   color: #FFF;
-font-family: Onest;
-font-size: 40px;
-font-style: normal;
-font-weight: 600;
-line-height: 110%; /* 44px */
-letter-spacing: -0.8px;
-max-width: 518px;
+  font-family: Onest;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 110%;
+  letter-spacing: -0.8px;
+  max-width: 518px;
+  margin-bottom: 36px;
 }
-.btn{
+
+.btn {
   border-radius: 128px;
-border: 1px solid #955AF5;
-background: #5F22C1;
-display: inline-flex;
-padding: 20px 36px;
-justify-content: center;
-align-items: center;
-gap: 6px;
-color: #FFF;
-text-align: center;
-font-family: Onest;
-font-size: 15px;
-font-style: normal;
-font-weight: 600;
-line-height: 18px; /* 120% */
-width: max-content;
+  border: 1px solid #955AF5;
+  background: #5F22C1;
+  display: inline-flex;
+  padding: 20px 36px;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  color: #FFF;
+  text-align: center;
+  font-family: Onest;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  cursor: pointer;
+  width: max-content;
 }
-.arrows{
+
+.arrows {
   display: flex;
   justify-content: space-between;
   gap: 24px;
   position: absolute;
   top: 50%;
   left: 8px;
-  width: calc(100% - 16px);
+  width: calc(100% - 30px);
   transform: translateY(-50%);
   z-index: 3;
 }
-.arrow{
+
+.arrow {
   display: flex;
   cursor: pointer;
+}
+.arrow.swiper-button-disabled {
+  opacity: 0;
+  cursor: not-allowed;
+}
+@media (max-width:1024px) {
+  .banner-wrapper {
+    margin-top: 36px;
+  }
+  .swiper_slide {
+    height: 496px;
+  }
+  .arrows {
+    display: none;
+  }
+  .banner__info {
+    padding: 16px;
+    padding-bottom: 69px;
+  }
+  .banner__title {
+    font-size: 26px;
+    line-height: 110%;
+    margin-bottom: 54px;
+  }
+  .btn {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
 }
 </style>
