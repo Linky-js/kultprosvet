@@ -1,134 +1,101 @@
-<script>
-import onlyCyrillic from "@/directives/onlyCirillick.js";
-import validateEmail from "@/directives/validateEmail.js";
+<script setup>
+import { ref, onMounted, defineProps } from 'vue';
+import { useRouter } from 'vue-router'
+import { useCookies } from 'vue3-cookies';
+
+
 import LoginBlock from "../blocks/LoginBlock.vue";
 import RegisterBlock from "../blocks/RegisterBlock.vue";
-import { useCookies } from "vue3-cookies";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-export default {
-  name: "LoginPage",
 
-  components: {
-    LoginBlock,
-    RegisterBlock,
-  },
-  directives: {
-    onlyCyrillic,
-    validateEmail,
-  },
-  props: {
-    msg: String,
-    links: String,
-  },
-  setup() {
-    const { cookies } = useCookies();
-    return { cookies };
-  },
-  methods: {
-    checkCookie() {
-      let user = this.cookies.isKey("user") ? this.cookies.get("user") : false;
+/**
+ * Опции компонента (name / components / directives)
+ * Для корректной локальной регистрации директив и компонентов
+ * используется defineOptions — поддерживается большинством билд-сетапов (Vite + Vue Macros).
+ */
 
-      if (user) {
-        this.accFlag = true;
-      }
-    },
-    onEmailChange() {
-      let email = document.querySelector(".emailChange");
-      if (email.value) {
-        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailPattern.test(email.value)) {
-          document.querySelector(".emailValid").classList.remove("default");
-        } else {
-          document.querySelector(".emailValid").classList.add("default");
-        }
-      }
-    },
-    registerSuccess() {
-      this.showDone = true;
-    },
-    popupToogle() {
-      document.querySelector(".popup").classList.toggle("active");
-    },
-    switchTo(mess) {
-      this.message = mess;
-    },
 
-    loginRequest() {
-      let login = document.querySelector(".inputLogin");
+/* props */
+const props = defineProps({
+  msg: String,
+  links: String,
+});
 
-      this.login = login.value;
-    },
-    PassRequest() {
-      let pass = document.querySelector(".inputPass");
+/* router / store / cookies */
+const router = useRouter();
+const { cookies } = useCookies();
 
-      this.pass = pass.value;
-    },
-    accountRequest() {
-      if (this.login !== "" && this.pass !== "") {
-        if (this.login === "admin" && this.pass === "adminadmin") {
-          this.$router.push("/account");
-        }
-      }
-    },
-    erroruser(error) {
-      this.error = error;
-      this.errorFlag = true;
-    },
-    closeError() {
-      this.errorFlag = false;
-    },
-  },
-  data() {
-    return {
-      message: "login",
-      login: "",
-      pass: "",
-      inputUsername: "",
-      inputPassword: "",
-      inputI: "",
-      inputEmail: "",
-      sfera: "",
-      error: "Danger",
-      errorFlag: false,
-      jsonUser: "",
-      user: this.$store.getters.getUser,
-      apiUrl: this.$store.getters.getApiUrl,
-      apiDomain: this.$store.getters.getApiDomain,
-      timeline: null,
-      showDone: false,
-    };
-  },
+/* state (ранее data()) */
+const message = ref(props.msg || "login");
+const error = ref("Danger");
+const errorFlag = ref(false);
+const timeline = ref(null);
+const showDone = ref(false);
+const accFlag = ref(false);
 
-  mounted() {
-    this.checkCookie();
-    this.switchTo(this.message);
-    gsap.registerPlugin(ScrollTrigger);
-    let mm = gsap.matchMedia();
-    this.timeline = gsap.timeline();
-    mm.add("(min-width: 768px)", () => {
-      gsap.set(".login__image", {
-        width: "100%",
-      });
-      gsap.set(".login__wrapper", {
-        width: "10%",
-        opacity: 0,
-      });
-      gsap.to(".login__image", {
-        width: "50%",
-        duration: 1,
-        delay: 0.1,
-      });
-      gsap.to(".login__wrapper", {
-        width: "50%",
-        opacity: 1,
-        duration: 1,
-        delay: 0.1,
-      });
-    });
-  },
-};
+/* Методы (ранее в methods) */
+function checkCookie() {
+  const u = cookies.isKey("user") ? cookies.get("user") : false;
+  if (u) {
+    accFlag.value = true;
+  }
+}
+
+function onEmailChange() {
+  const email = document.querySelector(".emailChange");
+  if (email && email.value) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const elValid = document.querySelector(".emailValid");
+    if (emailPattern.test(email.value)) {
+      elValid && elValid.classList.remove("default");
+    } else {
+      elValid && elValid.classList.add("default");
+    }
+  }
+}
+
+function registerSuccess() {
+  showDone.value = true;
+}
+
+function popupToogle() {
+  const popup = document.querySelector(".popup");
+  popup && popup.classList.toggle("active");
+}
+
+function switchTo(mess) {
+  message.value = mess;
+}
+
+function erroruser(err) {
+  error.value = err;
+  errorFlag.value = true;
+}
+
+function closeError() {
+  errorFlag.value = false;
+}
+
+/* lifecycle (mounted) */
+onMounted(() => {
+  checkCookie();
+  switchTo(message.value);
+
+  gsap.registerPlugin(ScrollTrigger);
+  const mm = gsap.matchMedia();
+  timeline.value = gsap.timeline();
+
+  mm.add("(min-width: 768px)", () => {
+    gsap.set(".login__image", { width: "100%" });
+    gsap.set(".login__wrapper", { width: "10%", opacity: 0 });
+    gsap.to(".login__image", { width: "50%", duration: 1, delay: 0.1 });
+    gsap.to(".login__wrapper", { width: "50%", opacity: 1, duration: 1, delay: 0.1 });
+  });
+});
 </script>
+
 
 <template>
  <div class="container">
@@ -204,7 +171,7 @@ export default {
             />
           </svg>
         </router-link>
-        <div class="close_login">
+        <div @click="router.back()" class="close_login">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

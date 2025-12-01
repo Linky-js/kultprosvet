@@ -10,6 +10,7 @@ const props = defineProps({
     type: [Array, Object, String],
     default: () => [],
   },
+  label: String,
   multiple: {
     type: Boolean,
     default: true,
@@ -51,10 +52,14 @@ watch(
   images,
   (newImages) => {
     skipNextUpdate.value = true
+   
+    
     if (!props.multiple) {
       emit('update:modelValue', newImages[0] || null)
     } else {
       emit('update:modelValue', [...newImages])
+      console.log('props.mult', props.multiple);
+      
     }
   },
   { deep: true }
@@ -109,10 +114,11 @@ const dragLeave = () => (isDragActive.value = false)
 
 <template>
   <div>
+    <label for="">{{ label }}</label>
     <button @click="triggerFileInput" class="btn-white">
       {{ multiple ? 'Добавить изображения ' : 'Выбрать изображение' }}
     </button>
-    {{ images }}
+    Multiple: {{ multiple }}
     <input
       type="file"
       ref="fileInput"
@@ -140,7 +146,7 @@ const dragLeave = () => (isDragActive.value = false)
       >
         <template #item="{ element }">
           <div class="image-item">
-            <img :src="apiDomain + 'web/uploads/' + element?.url.img" alt="" />
+            <img :src="element.dataurl || apiDomain + 'web/uploads/' + (element?.url?.img || element?.url)" alt="" />
             <button @click="removeImage(element)" class="remove-btn">×</button>
           </div>
         </template>
@@ -153,10 +159,17 @@ const dragLeave = () => (isDragActive.value = false)
 
       <p v-if="!images.length">Перетащите изображение сюда</p>
     </div>
+    <a href="https://www.site.com" class="link">А здесь текст этой ссылки</a>
   </div>
 </template>
 
 <style scoped>
+label {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18px;
+  color: #333;
+}
 .btn-white {
   text-align: center;
   font-size: 16px;

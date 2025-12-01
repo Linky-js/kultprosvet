@@ -6,8 +6,10 @@ import { onMounted } from "vue";
 import log1 from "@/assets/image/push.svg";
 import log2 from "@/assets/image/media.svg";
 import log3 from "@/assets/image/iri.svg";
+import log4 from "@/assets/image/push2.svg";
 
-const images = ref([...Array(5)].flatMap(() => [log1, log2, log3]));
+
+const images = ref([...Array(5)].flatMap(() => [log1, log2, log3, log4]));
 const text = ref("Наши партнеры верят: знания — это сила!");
 onMounted(() => {
   let marqueeBlock = document.querySelector(".marquiz__block");
@@ -16,7 +18,7 @@ onMounted(() => {
 
   gsap.to(".marquiz__block", {
     x: `-${distance}px`,
-    duration: 10,
+    duration: 20,
     ease: "linear",
     repeat: -1,
   });
@@ -72,8 +74,10 @@ onMounted(() => {
 }
 .marquiz__block img {
   flex-shrink: 0;
-  width: max-content;
-  object-fit: none;
+  
+  object-fit: inherit;
+  max-height: 100px;
+  max-width: 371px;
 }
 .head-h1 {
   color: #333;

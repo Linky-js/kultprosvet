@@ -7,15 +7,18 @@ import SubscribeBlock from '../blocks/SubscribeBlock.vue';
 import FooterBlock from '../blocks/FooterBlock.vue';
 import MiniVideoBlock from '../elements/MiniVideoBlock.vue';
 import PopupVideo from "../elements/PopupVideo.vue";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
-
+import { useRouter, useRoute } from 'vue-router'
+const router = useRouter()
+const route = useRoute()
 const store = useStore();
 const user = store.getters.getUser;
 const apiUrl = store.getters.getApiUrl;
 const themes = ref([]);
 const banners = ref([]);
 const bloggers = ref([]);
+const categories = ref([]);
 const showReset = ref(false);
 const categoryName = ref('');
 // const apiDomain = store.getters.getApiDomain;
@@ -86,12 +89,35 @@ async function getBloggers() {
     console.error('Ошибка при загрузке тем:', error);
   }
 }
+async function getCategories() {
+  try {
+    const authGet = `&auth=${user.username}:${user.auth_key}`;
+    const response = await fetch(`${apiUrl}api-video-category/get-list${authGet}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка: ${response.status}`);
+    }
+
+    const data = await response.json();
+    categories.value = data.categories;
+  } catch (error) {
+    console.error('Ошибка при загрузке тем:', error);
+  }
+}
 function goReset() {
   showReset.value = false;
   searchinput.value.value = '';
   categoryName.value = '';
   videos.value = [];
+
+   router.replace({ path: route.path, query: {} })
 }
+
 const searchFlag = ref(false);
 async function getSearch(search = false) {
   console.log('search', search);
@@ -108,7 +134,7 @@ async function getSearch(search = false) {
   searchFlag.value = true;
   try {
     const authGet = `&auth=${user.username}:${user.auth_key}`;
-    const response = await fetch(`${apiUrl}api-video/get-list${authGet}&universal_name=${search}`, {
+    const response = await fetch(`${apiUrl}api-video/get-list${authGet}&universal_name=${search}&order=sort`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -126,7 +152,7 @@ async function getSearch(search = false) {
     console.error('Ошибка при загрузке тем:', error);
   }
 }
-async function getSearchByCategoryTheme(item, type) {
+async function getSearchByCategoryTheme(item, type, search = false) {
 
   if (type === 'theme' || item.type === 'theme') {
     item.theme_id = item.id
@@ -140,12 +166,12 @@ async function getSearchByCategoryTheme(item, type) {
   console.log('item', item);
   let themeLink = '';
   if (item.theme_id && item.theme_id > 0) {
-    categoryName.value += item.name ? item.name + ' ' : item.title + ' ';
+    if (!search) categoryName.value = item.name ? item.name + ' ' : item.title + ' ';
     themeLink += `&theme_id=${item.theme_id}`;
   }
   if (item.category_id && item.category_id > 0) {
+    if (!search) categoryName.value = item.name ? item.name + ' ' : item.title + ' ';
     themeLink += `&category_id=${item.category_id}`;
-    categoryName.value += item.name ? item.name + ' ' : item.title + ' ';
   }
   if (item.blogger_id && item.blogger_id > 0) {
     themeLink += `&blogger_id=${item.blogger_id}`;
@@ -154,7 +180,7 @@ async function getSearchByCategoryTheme(item, type) {
 
   try {
     const authGet = `&auth=${user.username}:${user.auth_key}`;
-    const response = await fetch(`${apiUrl}api-video/get-list${authGet}${themeLink}`, {
+    const response = await fetch(`${apiUrl}api-video/get-list${authGet}${themeLink}&order=sort`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -176,19 +202,50 @@ async function getSearchByCategoryTheme(item, type) {
   }
 }
 function openVideo(video) {
-  iframe.value.src = video;
+  iframe.value = video;
   popupShow.value = true;
 }
 const closePopup = () => {
   popupShow.value = false;
   iframe.value = null;
 };
+function handleSearchQuery() {
+  const searchQuery = route.query.search
 
-onMounted(() => {
-  getThemes();
-  getBanners();
-  getBloggers();
+  if (searchQuery) {
+    const [type, id] = searchQuery.split('_')
+
+    if (['theme', 'category', 'blogger'].includes(type) && id) {
+      if (type === 'theme') {
+        categoryName.value = themes.value.find(t => t.id === Number(id))?.name || ''
+      } else if (type === 'category') {
+        categoryName.value = categories.value.find(t => t.id === Number(id))?.name || ''
+      } else if (type === 'blogger') {
+        categoryName.value = bloggers.value.find(t => t.id === Number(id))?.name || ''
+      }
+      getSearchByCategoryTheme({ id: Number(id), type }, type, true)
+    } else {
+      getSearch(searchQuery)
+    }
+  }
+}
+onMounted(async () => {
+  await getThemes()
+  await getBanners()
+  await getBloggers()
+  await getCategories()
+  handleSearchQuery()
 })
+
+// следим за изменением query-параметра
+watch(
+  () => route.query.search,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      handleSearchQuery()
+    }
+  }
+)
 
 </script>
 <template>
@@ -201,7 +258,7 @@ onMounted(() => {
             d="M7.5 15C3.35786 15 0 11.6421 0 7.5C0 3.35786 3.35786 0 7.5 0C11.6421 0 15 3.35786 15 7.5C15 9.21054 14.4274 10.7873 13.4633 12.0491L17.7071 16.2929C18.0976 16.6834 18.0976 17.3166 17.7071 17.7071C17.3166 18.0976 16.6834 18.0976 16.2929 17.7071L12.0491 13.4633C10.7873 14.4274 9.21054 15 7.5 15ZM7.5 13C10.5376 13 13 10.5376 13 7.5C13 4.46243 10.5376 2 7.5 2C4.46243 2 2 4.46243 2 7.5C2 10.5376 4.46243 13 7.5 13Z"
             fill="#737373" />
         </svg>
-        <input @input="getSearch($event.target)" ref="searchinput" type="text" class="search"
+        <input @input="getSearch($event.target.value)" ref="searchinput" type="text" class="search"
           placeholder="Поиск по видео">
         <div @click="goReset" class="reset" :class="{ show: showReset }">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -258,9 +315,13 @@ onMounted(() => {
         <NewVideoBanner :banners="banners" @searchvideobytheme="getSearchByCategoryTheme" />
         <Bloggers :bloggers="bloggers" @searchvideobyblogger="getSearchByCategoryTheme" />
         <HomeVideoBlock @searchvideobytheme="getSearchByCategoryTheme"
-          :category="{ id: 21, name: 'Наука для всех', type: 'category' }" />
+          :category="{ id: 5, name: 'История искусств и мировой архитектуры', type: 'theme' }" />
+        <HomeVideoBlock @searchvideobytheme="getSearchByCategoryTheme"
+          :category="{ id: 26, name: 'Наука для всех 3', type: 'category' }" />
         <HomeVideoBlock @searchvideobytheme="getSearchByCategoryTheme"
           :category="{ id: 1, name: 'Лайф менеджмент', type: 'theme' }" />
+           <HomeVideoBlock @searchvideobytheme="getSearchByCategoryTheme"
+          :category="{ id: 27, name: 'Культура для всех', type: 'category' }" />
       </div>
     </transition>
 

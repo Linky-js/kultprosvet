@@ -227,8 +227,8 @@ onMounted(async () => {
           </div>
         </div>
         <div class="buttons">
-          <router-link :to="'/theme/1'" class="whiollet">Подробнее</router-link>
-          <router-link :to="'/videos'" class="white">Смотреть видео</router-link>
+          <router-link :to="'/theme/5'" class="whiollet">Подробнее</router-link>
+          <router-link :to="'/videos?search=theme_5'" class="white">Смотреть видео</router-link>
         </div>
       </div>
     </div>

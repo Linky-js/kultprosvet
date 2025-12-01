@@ -1,12 +1,12 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps } from "vue";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { useStore } from "vuex";
 
 const store = useStore();
@@ -18,11 +18,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["searchvideobytheme"]);
-
-function getSearch(item) {
-  emit("searchvideobytheme", item);
-}
+// const emit = defineEmits(["searchvideobytheme"]);
 
 // const user = store.getters.getUser;
 // const apiUrl = store.getters.getApiUrl;
@@ -32,7 +28,7 @@ const apiDomain = store.getters.getApiDomain;
 // const popupShow = ref(false);
 // const iframe = ref(null);
 
-const modules = [Navigation, Pagination];
+const modules = [Navigation, Pagination, Autoplay];
 </script>
 <template>
   <div class="container">
@@ -54,11 +50,14 @@ const modules = [Navigation, Pagination];
           </svg>
         </div>
       </div>
-      <Swiper :slidesPerView="1" :spaceBetween="20" :loop="false" :modules="modules"
-        :navigation="{ nextEl: '.arrow-next', prevEl: '.arrow-prev' }"
-        :pagination="{ el: '.banner-pagination', clickable: true }">
+      <Swiper :slidesPerView="1" :spaceBetween="20" :autoplay="{
+        delay: 3500,
+        disableOnInteraction: false,
+      }" :loop="true" :modules="modules" :navigation="{ nextEl: '.arrow-next', prevEl: '.arrow-prev' }"
+        >
         <SwiperSlide v-for="item in props.banners" :key="item.id" class="swiper_slide">
-          <img :src="apiDomain + 'web/uploads/' + item.filename" alt="" />
+          <img class="banner__img" :src="apiDomain + 'web/uploads/' + item.filename" alt="" />
+          <img :src="apiDomain + 'web/uploads/' + item.poster_mobile" alt="" class="banner_mobile">
           <div class="banner__info">
             <div class="tags">
               <div class="theme tag">
@@ -71,17 +70,16 @@ const modules = [Navigation, Pagination];
             <h3 class="banner__title">
               {{ item.title }}
             </h3>
-            <div @click="getSearch(item)" class="btn">
+            <router-link :to="item.btn_link" class="btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path
                   d="M12.4873 5.45349C12.7675 5.60248 13.0018 5.82489 13.1652 6.0969C13.3287 6.36891 13.415 6.68025 13.415 6.99757C13.415 7.3149 13.3287 7.62624 13.1652 7.89825C13.0018 8.17025 12.7675 8.39267 12.4873 8.54166L5.01361 12.6057C3.8102 13.2608 2.33203 12.4092 2.33203 11.0622V2.93349C2.33203 1.58599 3.8102 0.734908 5.01361 1.38883L12.4873 5.45349Z"
                   fill="white" />
               </svg>
               Смотреть сейчас
-            </div>
+            </router-link>
           </div>
         </SwiperSlide>
-
       </Swiper>
     </div>
   </div>
@@ -206,29 +204,44 @@ const modules = [Navigation, Pagination];
   display: flex;
   cursor: pointer;
 }
+
 .arrow.swiper-button-disabled {
   opacity: 0;
   cursor: not-allowed;
+}
+.banner_mobile{
+  display: none;
 }
 @media (max-width:1024px) {
   .banner-wrapper {
     margin-top: 36px;
   }
+  .banner__img {
+    display: none;
+  }
+  .banner_mobile{
+    display: block;
+  }
+
   .swiper_slide {
     height: 496px;
   }
+
   .arrows {
     display: none;
   }
+
   .banner__info {
     padding: 16px;
     padding-bottom: 69px;
   }
+
   .banner__title {
     font-size: 26px;
     line-height: 110%;
     margin-bottom: 54px;
   }
+
   .btn {
     width: 100%;
     max-width: 100%;

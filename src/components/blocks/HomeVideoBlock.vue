@@ -26,8 +26,8 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({
-      id: 0,
-      type: "full",
+      id: 5,
+      type: "theme",
       title: "full"
     })
   },
@@ -42,8 +42,8 @@ const modules = [Navigation, Pagination];
 const getContent = async () => {
   const authGet = `&auth=${user.username}:${user.auth_key}`;
   try {
-    let link = `${apiUrl}api-video/get-list/${authGet}&limit=5`
-    if (props.category.title !== "full") link += `&${props.category.type}_id=${props.category.id}`
+    let link = `${apiUrl}api-video/get-list/${authGet}&limit=5&order=sort`
+    if (props.category.type !== "full") link += `&${props.category.type}_id=${props.category.id}`
     const response = await axios.get(link);
     videoPosts.value = response.data.videos;
     console.log("videoPosts", videoPosts.value);
@@ -54,6 +54,8 @@ const getContent = async () => {
 };
 
 const togglePlay = (iframeSrc) => {
+  console.log('iframe', iframeSrc);
+  
   popupShow.value = true;
   iframe.value = iframeSrc;
 };
@@ -104,69 +106,71 @@ onMounted(() => {
 
 
 <template>
-  <div class="home__video mBlock">
-    <div class="container">
-      <div class="home__video__wrapper">
-        <div v-if="props.category.title === 'full'" class="home__video-head">
-          <div class="head-h1">Видео – учись быстро и интересно!</div>
-          <div class="arrows">
-            <div class="arrow arrow__prev">
-              <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21.5 4H0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M4 7.5L0.5 4L4 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-            <div class="arrow arrow__next">
-              <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0.5 4H21.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M18 7.5L21.5 4L18 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-          </div>
-
-        </div>
-        <div v-else class="home__video-head">
-          <div class="head-h2">
-            {{ props.category.name }}
-          </div>
-          <div @click="emit('searchvideobytheme', props.category)" class="link_all" to="/news"><span>Смотреть еще</span>
-            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </div>
-        </div>
-        <swiper class="posts" :slidesPerView="'auto'" :spaceBetween="20" @swiper="onSwiper" :modules="modules"
-          :navigation="{ nextEl: '.arrow__next', prevEl: '.arrow__prev' }">
-          <Swiper-slide class="post" v-for="v in videoPosts" :key="v.id">
-            <div class="video">
-              <div :id="'btnVBlock' + v.id" class="video__play" @click="togglePlay(v.link)">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M19.1673 9.99755C19.1673 9.13505 18.7257 8.27255 17.8415 7.79171L7.16482 1.98505C5.44565 1.05088 3.33398 2.26755 3.33398 4.19171V9.99755H19.1673Z"
-                    fill="#5F22C1" />
-                  <path
-                    d="M7.16482 18.0125L17.8415 12.2058C18.2423 11.9936 18.5776 11.6761 18.8112 11.2873C19.0449 10.8986 19.168 10.4535 19.1673 10H3.33398V15.8058C3.33398 17.7308 5.44565 18.9467 7.16482 18.0125Z"
-                    fill="#5F22C1" />
+ <transition>
+    <div v-show="videoPosts.length" class="home__video mBlock">
+      <div class="container">
+        <div class="home__video__wrapper">
+          <div v-if="props.category.title === 'full'" class="home__video-head">
+            <div class="head-h1">Видео – учись быстро и интересно!</div>
+            <div class="arrows">
+              <div class="arrow arrow__prev">
+                <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.5 4H0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4 7.5L0.5 4L4 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </div>
-              <img class="poster" :src="apiDomain + 'web/uploads/' + v.poster" alt="" />
-            </div>
-            <div class="post__content">
-              <h3 class="headPost">
-                {{ truncate(v.title, 40) }}
-              </h3>
-              <div class="post__content-list">
-                <p>{{ v.category.name }}</p>
-                <p>{{ v.theme.name }}</p>
+              <div class="arrow arrow__next">
+                <svg width="22" height="8" viewBox="0 0 22 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0.5 4H21.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M18 7.5L21.5 4L18 0.5" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
               </div>
             </div>
-          </Swiper-slide>
-        </swiper>
+  
+          </div>
+          <div v-else class="home__video-head">
+            <div class="head-h2">
+              {{ props.category.name }}
+            </div>
+            <div @click="emit('searchvideobytheme', props.category)" class="link_all" to="/news"><span>Смотреть еще</span>
+              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+          <swiper class="posts" :slidesPerView="'auto'" :spaceBetween="20" @swiper="onSwiper" :modules="modules"
+            :navigation="{ nextEl: '.arrow__next', prevEl: '.arrow__prev' }">
+            <Swiper-slide class="post" v-for="v in videoPosts" :key="v.id">
+              <div class="video">
+                <div :id="'btnVBlock' + v.id" class="video__play" @click="togglePlay(v.link)">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M19.1673 9.99755C19.1673 9.13505 18.7257 8.27255 17.8415 7.79171L7.16482 1.98505C5.44565 1.05088 3.33398 2.26755 3.33398 4.19171V9.99755H19.1673Z"
+                      fill="#5F22C1" />
+                    <path
+                      d="M7.16482 18.0125L17.8415 12.2058C18.2423 11.9936 18.5776 11.6761 18.8112 11.2873C19.0449 10.8986 19.168 10.4535 19.1673 10H3.33398V15.8058C3.33398 17.7308 5.44565 18.9467 7.16482 18.0125Z"
+                      fill="#5F22C1" />
+                  </svg>
+                </div>
+                <img class="poster" :src="apiDomain + 'web/uploads/' + v.poster" alt="" />
+              </div>
+              <div class="post__content">
+                <h3 class="headPost">
+                  {{ truncate(v.title, 40) }}
+                </h3>
+                <div class="post__content-list">
+                  <p>{{ v.category.name }}</p>
+                  <p>{{ v.theme.name }}</p>
+                </div>
+              </div>
+            </Swiper-slide>
+          </swiper>
+        </div>
       </div>
     </div>
-  </div>
+ </transition>
   <PopupVideo v-if="popupShow" :item="iframe" @closePopup="closePopup" />
 </template>
 <style scoped>
@@ -213,7 +217,7 @@ onMounted(() => {
 }
 
 .home__video {
-  margin-top: 130px;
+  margin-top: 90px;
 }
 
 .home__video-head {
@@ -270,7 +274,7 @@ onMounted(() => {
   position: relative;
   display: flex;
   margin-bottom: 16px;
-  height: 345px;
+  height: 300px;
   border-radius: 28px;
   overflow: hidden;
 }

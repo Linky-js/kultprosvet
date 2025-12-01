@@ -5,6 +5,7 @@ import NewPartnersBlock from "../blocks/NewPartnersBlock.vue";
 import NewThemesItems from "../blocks/NewThemesItems.vue";
 import NewAboutBlock from "../blocks/NewAboutBlock.vue";
 import NewThemeHomeBlock from "../blocks/NewThemeHomeBlock.vue";
+import MapBlockHome from "../blocks/home/MapBlockHome.vue";
 import HomeVideoBlock from "../blocks/HomeVideoBlock.vue";
 import NewRegisterBlock from "../blocks/NewRegisterBlock.vue";
 import homeNewsBlock from "../blocks/homeNewsBlock.vue";
@@ -18,12 +19,18 @@ export default {
     NewThemeHomeBlock,
     NewPartnersBlock,
     NewThemesItems,
+    MapBlockHome,
     NewAboutBlock,
     NewRegisterBlock,
     HomeVideoBlock,
     homeNewsBlock,
     SubscribeBlock,
     FooterBlock,
+  },
+  data() {
+    return {
+      themesBlockShow: false,
+    };
   },
 };
 </script>
@@ -32,11 +39,12 @@ export default {
   <NewHomeMainBlock />
   <NewThemeHomeBlock />
   <NewPartnersBlock />
-  <NewThemesItems />
-  <NewAboutBlock />
+  <NewThemesItems v-if="themesBlockShow" />
+  <MapBlockHome />
   <HomeVideoBlock />
-  <NewRegisterBlock />
   <homeNewsBlock />
+  <NewAboutBlock />
+  <NewRegisterBlock />
   <SubscribeBlock />
   <FooterBlock />
 </template>

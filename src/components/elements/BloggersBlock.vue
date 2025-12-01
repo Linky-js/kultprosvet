@@ -44,7 +44,7 @@ function goSearch(blogger) {
 </template>
 <style>
 .bloggers-block {
-  margin-top: 130px;
+  margin-top: 90px;
 }
 
 .bloggers {
@@ -83,7 +83,7 @@ function goSearch(blogger) {
 
 @media (max-width: 1024px) {
   .bloggers-block {
-    margin-top: 60px;
+    margin-top: 40px;
   }
 
   .head-h2 {

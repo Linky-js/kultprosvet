@@ -1,8 +1,11 @@
 <script setup>
+import { ref } from "vue";
+
+const inValid = ref(false);
 </script>
 
 <template>
-  <div class="register">
+  <div v-if="inValid" class="register">
     <div class="container">
       <div class="register__content">
         <div class="register__content__left">
@@ -19,8 +22,8 @@
         </div>
       
       <div class="register__content__right">
-        <NuxtLink class="whiollet">Войти</NuxtLink>
-        <NuxtLink class="white">Зарегистрироваться</NuxtLink>
+        <router-link :to="'/login'" class="whiollet">Войти</router-link>
+        <router-link class="white">Зарегистрироваться</router-link>
       </div>
     </div>
     </div>

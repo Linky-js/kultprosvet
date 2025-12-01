@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <template>
-  <router-link :to="'/post/' + item.id" class="news__item">
+  <router-link :to="'/post/' + (item.slug ? item.slug : item.id)" class="news__item">
     <img :src="apiDomain + 'web/uploads/' + item.title_photo" alt="news" class="news__item__image" />
     <div class="news__item-arrow">
       <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">

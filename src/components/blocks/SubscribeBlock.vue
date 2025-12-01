@@ -28,7 +28,7 @@ export default {
 };
 </script>
 <template>
-  <div class="subscribe">
+  <div v-if="isEmailValid" class="subscribe">
     <div class="container">
       <div class="subscribe__content">
         <div class="subscribe__content__left">

@@ -24,7 +24,7 @@ const truncate = (text, maxLength) => {
 <template>
     <div class="post">
         <div class="video">
-            <div :id="'btnVBlock' + props.video.id" class="video__play" @click="togglePlay(props.video.link)">
+            <div :id="'btnVBlock' + props?.video.id" class="video__play" @click="togglePlay(props?.video.link)">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M19.1673 9.99755C19.1673 9.13505 18.7257 8.27255 17.8415 7.79171L7.16482 1.98505C5.44565 1.05088 3.33398 2.26755 3.33398 4.19171V9.99755H19.1673Z"
@@ -194,7 +194,7 @@ const truncate = (text, maxLength) => {
     }
 
     .home__video {
-        margin-top: 100px;
+        margin-top: 50px;
     }
 }
 </style>

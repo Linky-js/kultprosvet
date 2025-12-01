@@ -97,7 +97,7 @@ export default {
           Ваш город {{ local.city }} ?
           <div class="btns">
             <a @click="selectCity(local)" class="get__addNews">Все верно</a>
-            <a @click="this.stepUp = 2" class="btn-red">Выбрать другой</a>
+            <a @click="this.stepUp = 2" class="whiollet">Выбрать другой</a>
           </div>
         </div>
       </div>

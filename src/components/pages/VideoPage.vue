@@ -4,7 +4,7 @@ import HeaderBlock from "../blocks/HeaderBlock.vue";
 import FooterBlock from "../blocks/FooterBlock.vue";
 import Breadcrumbs from "../ui/Breadcrumbs.vue";
 import SubscribeBlock from "../blocks/SubscribeBlock.vue";
-import PodkastItemToPage from "../elements/PodkastItemToPage.vue";
+import MiniVideoBlock from "../elements/MiniVideoBlock.vue";
 
 export default {
   name: "PodkastPage",
@@ -13,7 +13,7 @@ export default {
     FooterBlock,
     Breadcrumbs,
     SubscribeBlock,
-    PodkastItemToPage,
+    MiniVideoBlock,
   },
 
   data() {
@@ -22,7 +22,7 @@ export default {
       apiUrl: this.$store.getters.getApiUrl,
       apiDomain: this.$store.getters.getApiDomain,
       relatedNews: [],
-      post: {},
+      post: null,
       crumbsShow: false,
     };
   },
@@ -36,9 +36,9 @@ export default {
       this.postId = this.getThemeId;
       let params = `&auth=${this.user.username}:${this.user.auth_key}`;
       axios
-        .get(this.apiUrl + "api-podcast/get" + params + "&id=" + this.postId)
+        .get(this.apiUrl + "api-video/get" + params + "&id=" + this.postId)
         .then((response) => {
-          this.post = response.data.podcast;
+          this.post = response.data.video;
 
           this.crumbsShow = true;
         })
@@ -88,7 +88,7 @@ export default {
   <Breadcrumbs
     v-if="crumbsShow"
     :page="[
-      { name: 'Подкасты', link: 'podcasts' },
+      { name: 'Видео', link: 'videos' },
       { name: post?.title, link: '' },
     ]"
     :title="post.title"
@@ -106,8 +106,9 @@ export default {
         <div id="post" class="post__text">
           {{ post?.description }}
         </div>
-        <PodkastItemToPage
-          :item="post"
+        <MiniVideoBlock
+        v-if="post"
+          :video="post"
         />
       </div>
       <a @click="copyUrl" class="desc__share">

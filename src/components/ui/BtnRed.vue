@@ -26,10 +26,10 @@ export default {
 </script>
 
 <template>
-  <router-link v-if="link" :to="link" class="btn-red">
+  <router-link v-if="link" :to="link" class="whiollet">
     <slot></slot>
   </router-link>
-  <button v-else class="btn-red"><slot></slot></button>
+  <button v-else class="whiollet"><slot></slot></button>
 </template>
 
 <style scoped>

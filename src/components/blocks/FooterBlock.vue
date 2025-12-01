@@ -67,6 +67,10 @@ export default {
       ],
       themes: [
         {
+          title: "История искусств",
+          link: "/theme/5",
+        },
+        {
           title: "Лайф-менеджмент",
           link: "/theme/1",
         },
@@ -106,10 +110,7 @@ export default {
           title: "Спорт",
           link: "/theme/12",
         },
-        {
-          title: "История",
-          link: "/theme/5",
-        },
+
         {
           title: "Живопись",
           link: "/theme/7",
@@ -307,8 +308,8 @@ export default {
     <div class="footer__bot">
       <div class="container">
         <p>Все материалы и цены, размещенные на сайте, носят справочный характер и не являются публичной офертой,
-определяемой положением Статьи 437(2) Гражданского кодекса Российской Федерации</p>
-<p>2024 © Все права защищены</p>
+          определяемой положением Статьи 437(2) Гражданского кодекса Российской Федерации</p>
+        <p>{{ new Date().getFullYear() }} © Все права защищены</p>
       </div>
     </div>
   </div>
@@ -319,11 +320,13 @@ export default {
   padding: 28px 0;
   margin-top: 40px;
 }
+
 .footer__bot .container {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
 }
+
 .footer__bot p {
   font-size: 13px;
   line-height: 16px;
@@ -331,15 +334,18 @@ export default {
   font-weight: 400;
   color: #949494;
 }
+
 .footer__bot p:first-child {
   max-width: 697px;
   width: 100%;
 }
+
 .artfactory {
   display: flex;
   align-items: end;
   gap: 5px;
 }
+
 .artfactory .value:last-child {
   color: #5F22C1;
 }
@@ -519,10 +525,12 @@ export default {
     align-items: flex-start;
     justify-content: flex-start;
   }
+
   .footer__bot {
     padding: 30px 0;
     margin-top: 30px;
   }
+
   .line {
     display: none;
   }

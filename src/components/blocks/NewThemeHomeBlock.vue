@@ -49,7 +49,7 @@ import img1 from "@/assets/image/home-theme/human-1.png";
 import img2 from "@/assets/image/home-theme/human-2.png";
 import img3 from "@/assets/image/home-theme/human-3.png";
 import img4 from "@/assets/image/home-theme/human-4.png";
-import img5 from "@/assets/image/home-theme/human-5.png";
+import img5 from "@/assets/image/home-theme/human-55.png";
 import img6 from "@/assets/image/home-theme/human-6.png";
 import img7 from "@/assets/image/home-theme/human-7.png";
 import img8 from "@/assets/image/home-theme/human-8.png";
@@ -58,13 +58,13 @@ import img10 from "@/assets/image/home-theme/human-10.png";
 import img11 from "@/assets/image/home-theme/human-11.png";
 import img12 from "@/assets/image/home-theme/human-12.png";
 const slides = [
-  {
-    id: 1,
-    background: back1,
-    head: "Музыка",
-    text: "Фиолетовый цвет связан с духовностью, воображением и артистизмом",
-    img: img1,
-    link: "/theme/4",
+{
+    id: 5,
+    background: back5,
+    head: "История искусств и мировой архитектуры",
+    text: "Охра ассоциируется с традициями, стабильностью и опытом",
+    img: img5,
+    link: "/theme/5",
   },
   {
     id: 2,
@@ -83,6 +83,16 @@ const slides = [
     link: "/theme/2",
   },
   {
+    id: 1,
+    background: back1,
+    head: "Музыка",
+    text: "Фиолетовый цвет связан с духовностью, воображением и артистизмом",
+    img: img1,
+    link: "/theme/4",
+  },
+  
+  
+  {
     id: 4,
     background: back4,
     head: "Литература",
@@ -90,14 +100,7 @@ const slides = [
     img: img4,
     link: "/theme/3",
   },
-  {
-    id: 5,
-    background: back5,
-    head: "История ",
-    text: "Охра ассоциируется с традициями, стабильностью и опытом",
-    img: img5,
-    link: "/theme/5",
-  },
+  
   {
     id: 6,
     background: back6,
@@ -191,7 +194,7 @@ const slides = [
               </div>
             </div>
             <div class="text__slide">{{ slide.text }}</div>
-            <img class="slide__img" :src="slide.img" alt="" />
+            <img :class="{w100: slide.id === 5}" class="slide__img" :src="slide.img" alt="" />
             <img class="slide__back" :src="slide.background" alt="">
           </router-link>
         </swiper-slide>
@@ -215,6 +218,9 @@ const slides = [
   justify-content: space-between;
   gap: 15px;
   margin-bottom: 36px;
+}
+.w100 {
+  width: 100%;
 }
 
 .head-h1 {
@@ -304,6 +310,7 @@ const slides = [
 .slide__item:hover .btn__slide {
   transform: rotate(-45deg);
   background: transparent;
+  flex-shrink: 0;
 }
 
 .slide__item:hover .slide__back {
@@ -374,6 +381,7 @@ const slides = [
   backdrop-filter: blur(30px);
   position: relative;
   z-index: 2;
+  flex-shrink: 0;
 }
 
 .slide__1 .btn__slide {
@@ -459,9 +467,6 @@ const slides = [
   .arrowsSlide {
     display: none;
   }
-  .theme__head {
-    margin-bottom: ;
-  }
   .head-h1 {
     font-size: 24px;
   }
@@ -527,6 +532,8 @@ const slides = [
   }
   .slide__5 .slide__img {
     width: 165px;
+            left: 0;
+        transform: translateX(0px);
   }
   .slide__6 .slide__img {
     width: 242px;

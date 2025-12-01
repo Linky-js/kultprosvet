@@ -1,6 +1,8 @@
 export const entityConfigs = {
   news: [
     { type: 'input', key: 'title', label: 'Заголовок', sourceKey: 'title', targetKey: 'title' },
+    { type: 'input', key: 'slug', label: 'Слаг', sourceKey: 'slug', targetKey: 'slug' },
+
     { type: 'textarea', key: 'shortText', label: 'Краткое описание', sourceKey: 'short_text', targetKey: 'short_text' },
     { type: 'editor', key: 'text', label: 'Контент', sourceKey: 'text', targetKey: 'text' },
     { type: 'date', key: 'date_publication', label: 'Дата публикации', sourceKey: 'date_publication', targetKey: 'date_publication' },
@@ -15,14 +17,17 @@ export const entityConfigs = {
   video: [
     { type: 'select', key: 'theme', label: 'Тема', sourceKey: 'theme_id', targetKey: 'theme_id', props: { options: [] } },
     { type: 'select', key: 'categorieId', label: 'Категория', sourceKey: 'category_id', targetKey: 'category_id', props: { options: [] } },
+    // { type: 'select', key: 'blogger_id', label: 'Blogger', sourceKey: 'blogger_id', targetKey: 'blogger_id', props: { options: [] } },
+
     { type: 'input', key: 'title', label: 'Название видео', sourceKey: 'title', targetKey: 'title' },
     { type: 'textarea', key: 'shortText', label: 'Описание', sourceKey: 'description', targetKey: 'description' },
     { type: 'input', key: 'link', label: 'Ссылка на видео', sourceKey: 'link', targetKey: 'link' },
     
     { type: 'images', key: 'srcPhoto', label: 'Постер', sourceKey: 'poster', targetKey: 'poster', props: { multiple: false } },
+
     { type: 'input', key: 'sort', label: 'Сортировка', sourceKey: 'sort', targetKey: 'sort' },
     { type: 'input', key: 'blogger_id', label: 'Blogger ID', sourceKey: 'blogger_id', targetKey: 'blogger_id' },
-    { type: 'date', key: 'date_publication', label: 'Дата публикации', sourceKey: 'date_publication', targetKey: 'date_publication' },
+    // { type: 'date', key: 'date_publication', label: 'Дата публикации', sourceKey: 'date_publication', targetKey: 'date_publication' },
   ],
 
   video1category: [
@@ -35,7 +40,7 @@ export const entityConfigs = {
     { type: 'select', key: 'categorieId', label: 'Категория', sourceKey: 'category_id', targetKey: 'category_id', props: { options: [] } },
     { type: 'input', key: 'title', label: 'Заголовок', targetKey: 'title' },
     { type: 'images', key: 'srcPhoto', label: 'Картинка', sourceKey: 'filename', targetKey: 'filename', props: { multiple: false } },
-
+    { type: 'images', key: 'posterMobile', label: 'Постер мобильная', sourceKey: 'poster_mobile', targetKey: 'poster_mobile', props: { multiple: false } },
     { type: 'input', key: 'btnText', label: 'Текст кнопки', sourceKey: 'btn_text', targetKey: 'btn_text' },
     { type: 'input', key: 'btnLink', label: 'Ссылка кнопки', sourceKey: 'btn_link', targetKey: 'btn_link' },
     { type: 'input', key: 'time', label: 'Длительность видео (сек.)', targetKey: 'time' },
@@ -46,7 +51,8 @@ export const entityConfigs = {
     { type: 'select', key: 'categorieId', label: 'Категория', sourceKey: 'category_id', targetKey: 'category_id', props: { options: [] } },
     { type: 'input', key: 'title', label: 'Название подкаста', sourceKey: 'title', targetKey: 'title' },
     { type: 'textarea', key: 'shortText', label: 'Описание', sourceKey: 'description', targetKey: 'description' },
-    { type: 'input', key: 'audio', label: 'Ссылка на аудио', sourceKey: 'link', targetKey: 'link' },
+    // { type: 'input', key: 'audio', label: 'Ссылка на аудио', sourceKey: 'link', targetKey: 'link' },
+    { type: 'file', key: 'link', label: 'Файл', sourceKey: 'link', targetKey: 'file' },
     { type: 'images', key: 'srcPhoto', label: 'Картинка подкаста', sourceKey: 'pic', targetKey: 'pic', props: { multiple: false } },
     { type: 'input', key: 'sort', label: 'Сортировка', sourceKey: 'sort', targetKey: 'sort' },
     { type: 'date', key: 'date_publication', label: 'Дата публикации', sourceKey: 'date_publication', targetKey: 'date_publication' },

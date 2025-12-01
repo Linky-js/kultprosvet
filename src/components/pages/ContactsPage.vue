@@ -70,7 +70,7 @@ export default {
               name="message"
               id="message"
             ></textarea>
-            <button class="btn-red">Отправить</button>
+            <button class="whiollet">Отправить</button>
           </div>
           <div class="description">
             Оставляя свой адрес электронной почты , выдаёте согласие на

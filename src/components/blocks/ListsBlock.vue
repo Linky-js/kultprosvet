@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       searchQuery: "",
-      sortBy: "idAsc", // Возможные значения: idAsc, idDesc, nameAsc, nameDesc
+      sortBy: "idDesc", // Возможные значения: idAsc, idDesc, nameAsc, nameDesc
       categories: [],
       user: this.$store.getters.getUser,
       apiUrl: this.$store.getters.getApiUrl,

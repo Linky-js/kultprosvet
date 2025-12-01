@@ -11,6 +11,7 @@ import "v-calendar/style.css";
 // Компоненты форм
 import Editor from '@/components/blocks/form/EditorNews.vue';
 import BaseInput from '@/components/blocks/form/BaseInput.vue';
+import BaseFileInput from '@/components/blocks/form/BaseFileInput.vue';
 import BaseTextarea from '@/components/blocks/form/BaseTextarea.vue';
 import BaseSelect from '@/components/blocks/form/BaseSelect.vue';
 import BaseDatePicker from '@/components/blocks/form/BaseDatePicker.vue';
@@ -53,6 +54,8 @@ function getDefaultValue(type) {
     case 'editor':
     case 'select':
     case 'date':
+      return '';
+    case 'file':
       return '';
     case 'images':
       return [];
@@ -139,6 +142,7 @@ watch(() => props.entity, (val) => {
 function getComponent(type) {
   const map = {
     input: BaseInput,
+    file: BaseFileInput,
     textarea: BaseTextarea,
     select: BaseSelect,
     date: BaseDatePicker,
@@ -270,46 +274,39 @@ function getFieldProps(field) {
 }
 
 // ---------------------- SAVE ENTITY ----------------------
-async function uploadFile(input) {
-  // Определяем File из входа
-  let file = null;
-
+async function uploadFile(input, type) {
   if (!input) return null;
 
-  // Если передали сам File
+  let file = null;
+
   if (input instanceof File) {
     file = input;
-  }
-  // Если передали объект { file, dataurl, ... }
-  else if (typeof input === 'object' && input.file instanceof File) {
+  } else if (typeof input === "object" && input.file instanceof File) {
     file = input.file;
-  }
-  // Если передали событие <input type="file" /> 
-  else if (input.target && input.target.files && input.target.files[0]) {
+  } else if (input.target?.files?.[0]) {
     file = input.target.files[0];
   }
 
   if (!file) {
-    console.warn('uploadFile: не нашли файл для загрузки', input);
+    console.warn("uploadFile: не нашли файл для загрузки", input);
     return null;
   }
 
-  const validFileTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "image/svg+xml",
-  ];
-  if (!validFileTypes.includes(file.type)) {
-    alert("Можно загружать только JPG/PNG/WebP/SVG/GIF.");
-    return null;
-  }
+  // const validFileTypes = {
+  //   image: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
+  //   document: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+  //   // добавьте другие типы файлов здесь
+  // };
+
+  // if (!validFileTypes[type].includes(file.type)) {
+  //   alert(`Можно загружать только ${type} файлы.`);
+  //   return null;
+  // }
 
   const fd = new FormData();
   fd.append("UploadForm[file]", file);
-  fd.append("folder", "users/avatar");
-  fd.append("filenamePrefix", "avatar_");
+  fd.append("folder", type === "image" ? "images/img" : "documents");
+  fd.append("filenamePrefix", type === "image" ? "img_" : "doc_");
 
   const authGet = `&auth=${user.username}:${user.auth_key}`;
 
@@ -318,17 +315,11 @@ async function uploadFile(input) {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
-    // Поддерживаем разные форматы ответа сервера
     const d = res.data;
     if (!d) return null;
-    if (typeof d === 'string') return d;
-    if (d.path) return d.path;
-    if (d.url) return d.url;
-    if (d.file) return d.file;
-    // если вернулся объект/строка в другом ключе — вернём весь payload чтобы не терять данные
-    return d;
+    return d.path || d.url || d.file || d; // универсально
   } catch (err) {
-    console.error('Ошибка uploadFile:', err);
+    console.error("Ошибка uploadFile:", err);
     throw err;
   }
 }
@@ -337,35 +328,64 @@ async function uploadFile(input) {
 async function buildParamsFromConfig(config, formDataLocal) {
   try {
     const params = {};
-
-    // сначала простое копирование
-    config.forEach(field => {
-      const targetKey = field.sourceKey || field.key; // у тебя уже так использовалось
-      const value = formDataLocal[field.key];
-      if (value !== undefined) {
-        params[targetKey] = value;
-      }
-    });
-
     params.date_add = new Date();
 
-    // Пример для титульного фото: backend у тебя использует ключ 'title_photo'
-    // Проверяем: если пришёл объект (не строка) — нужно загрузить файл
-    if ((params.title_photo && typeof params.title_photo !== 'string') || (params.filename && typeof params.filename !== 'string')) {
-      // если пришёл объект и у него флаг isExisting === true, просто возьмём url
-      const tp = params.title_photo || params.filename;
-      if (tp.isExisting && (tp.url || tp.path)) {
-        params.title_photo = tp.url || tp.path;
-      } else {
-        // загружаем файл (поддерживает File / {file}/ event)
-        const uploaded = await uploadFile(tp);
-        // подставляем путь, который вернул сервер
-        params.title_photo = uploaded;
-        params.filename = uploaded;
+    for (const field of config) {
+      
+     
+      const key = field.sourceKey || field.key;
+      const value = formDataLocal[field.key];
+       
+      // --- Пропускаем undefined
+      if (value === undefined) continue;
+ 
+      // --- Если поле не изображение
+      if (field.type !== "images" && field.type != "file") {
+        params[key] = value;
+        console.log('field', field.type, value);
+        continue;
       }
-    } else {
-      // если нет params.title_photo, но в formData есть поле вида srcPhoto (в зависимости от конфига)
-      // — можно добавить дополнительные проверки, если нужно
+     
+      // --- Обработка изображений (single / multiple)
+      if (!value) {
+        params[key] = null;
+        continue;
+      }
+
+      // --- Если массив (множественные изображения)
+      if (Array.isArray(value)) {
+        const uploadedList = [];
+        
+        for (const item of value) {
+          console.log('item', item);
+          // если это уже существующая картинка — не грузим
+          if (item.isExisting && (item.url || item.path)) {
+            uploadedList.push(item.url?.img || item.url || item.path);
+            continue;
+          }
+
+          // если есть File или dataurl — грузим
+          const uploaded = await uploadFile(item);
+          if (uploaded) uploadedList.push(uploaded);
+        }
+
+        params[key] = uploadedList.length > 1 ? uploadedList : uploadedList[0];
+        continue;
+      }
+
+      // --- Если не массив (одиночное изображение)
+      if (typeof value === "string") {
+        params[key] = value;
+        continue;
+      }
+
+      if (value.isExisting && (value.url || value.path)) {
+        params[key] = value.url || value.path;
+        continue;
+      }
+
+      const uploaded = await uploadFile(value);
+      params[key] = uploaded;
     }
 
     return params;
@@ -375,10 +395,15 @@ async function buildParamsFromConfig(config, formDataLocal) {
   }
 }
 
+
+
 async function saveEntity() {
   const authGet = `&auth=${user.username}:${user.auth_key}`;
   const isUpdate = !!props.initialData?.id;
   let link = '';
+ console.log('formdata', formData);
+ 
+  // определяем endpoint
   if (props.entity.includes('1category')) {
     link = props.entity.slice(0, -9) + '-category';
   } else {
@@ -388,30 +413,74 @@ async function saveEntity() {
     }
   }
 
-  const endpoint = `api-${link}/${isUpdate ? "update" : "set"}`;
+  const endpoint = `api-${link}/${isUpdate ? 'update' : 'set'}`;
   const configCurrent = entityConfigs[props.entity] || [];
 
   try {
+    // --- 1. собираем параметры
     const params = await buildParamsFromConfig(configCurrent, formData);
+
     if (props.entity === 'news') params.author_id = user.user_id;
     if (isUpdate) params.id = props.initialData.id;
+
+    // --- 2. сохраняем сам объект
     const { data } = await axios.post(apiUrl + endpoint + authGet, params, {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (data.status === "false") {
-      toast.error(data.error || "Ошибка при сохранении", { autoClose: 1500 });
+    if (data.status === 'false') {
+      toast.error(data.error || 'Ошибка при сохранении', { autoClose: 1500 });
       return;
     }
 
-    toast.success(isUpdate ? "Изменения сохранены!" : "Создано успешно!", {
+    // --- 3. получаем object_id
+    const objectId = data?.object?.id || props.initialData?.id;
+    if (!objectId) {
+      console.error('Не удалось определить ID объекта');
+      return;
+    }
+
+    // --- 4. если это entity = objects — отдельно сохраняем изображения
+    if (props.entity === 'object' && Array.isArray(formData.srcPhoto)) {
+      for (const photo of formData.srcPhoto) {
+        // пропускаем пустые
+        if (!photo) continue;
+
+        // подготавливаем путь (если нужно — загружаем)
+        let imgPath = photo.url?.img || photo.url || photo.path;
+        if (!photo.isExisting && photo.file) {
+          imgPath = await uploadFile(photo);
+        }
+
+        if (!imgPath) continue;
+
+        // подготавливаем данные для запроса
+        const imgParams = {
+          object_id: objectId,
+          img: imgPath,
+          alt: data.object.name || 'default',
+        };
+
+        // выбираем правильный endpoint
+        const imgEndpoint = photo.id && photo.isExisting
+          ? 'api-object-img/update'
+          : 'api-object-img/set';
+
+        await axios.post(apiUrl + imgEndpoint + authGet, imgParams, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    toast.success(isUpdate ? 'Изменения сохранены!' : 'Создано успешно!', {
       autoClose: 1000,
     });
   } catch (error) {
-    console.error("Ошибка при сохранении:", error);
-    toast.error("Произошла ошибка при сохранении", { autoClose: 1000 });
+    console.error('Ошибка при сохранении:', error);
+    toast.error('Произошла ошибка при сохранении', { autoClose: 1000 });
   }
 }
+
 
 // ---------------------- DATE HANDLING ----------------------
 function handleDateChange(timestamp = false) {
@@ -447,6 +516,7 @@ function handleDateChange(timestamp = false) {
     </div>
 
     <!-- Генерация полей -->
+     
     <component v-for="field in config" :is="getComponent(field.type)" :key="field.key" v-model="formData[field.key]"
       :label="field.label" v-bind="getFieldProps(field)" />
 

@@ -20,6 +20,7 @@ import TestPage from '@/components/pages/TestPage.vue';
 import AboutPage from '@/components/pages/AboutPage.vue';
 import AfishaPage from '@/components/pages/AfishaPage.vue';
 import PodkastPage from '@/components/pages/PodkastPage.vue';
+import VideoPage from '@/components/pages/VideoPage.vue';
 import EventPage from '@/components/pages/EventPage.vue';
 import MaterialsPage from '@/components/pages/MaterialsPage.vue';
 import BloggerPage from '@/components/pages/BloggerPage.vue';
@@ -121,6 +122,11 @@ const routes = [
     path: '/podcast/:id',
     name: 'PodkastPage',
     component: PodkastPage
+  },
+  {
+    path: '/videos/:id',
+    name: 'VideoPage',
+    component: VideoPage
   },
   {
     path: '/about',

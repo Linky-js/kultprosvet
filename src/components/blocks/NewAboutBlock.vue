@@ -1,26 +1,26 @@
 <script setup>
 import gsap from "gsap";
 import { onMounted } from "vue";
-import k1 from "@/assets/image/k1.png";
-import k2 from "@/assets/image/k2.png";
-import k3 from "@/assets/image/k3.png";
-import k4 from "@/assets/image/k4.png";
-import k5 from "@/assets/image/k5.png";
-import k6 from "@/assets/image/k6.png";
-import k7 from "@/assets/image/k7.png";
-import k8 from "@/assets/image/k8.png";
-import k9 from "@/assets/image/k9.png";
-import k10 from "@/assets/image/k10.png";
-import k11 from "@/assets/image/k11.png";
-import k12 from "@/assets/image/k12.png";
-import k13 from "@/assets/image/k13.png";
-import k14 from "@/assets/image/k14.png";
-import k15 from "@/assets/image/k15.png";
-import k16 from "@/assets/image/k16.png";
-import k17 from "@/assets/image/k17.png";
-import k18 from "@/assets/image/k18.png";
-import k19 from "@/assets/image/k19.png";
-import k20 from "@/assets/image/k20.png";
+import k1 from "@/assets/image/about/k1.jpg";
+import k2 from "@/assets/image/about/k2.jpg";
+import k3 from "@/assets/image/about/k3.jpg";
+import k4 from "@/assets/image/about/k4.jpg";
+import k5 from "@/assets/image/about/k5.jpg";
+import k6 from "@/assets/image/about/k6.jpg";
+import k7 from "@/assets/image/about/k7.jpg";
+import k8 from "@/assets/image/about/k8.jpg";
+import k9 from "@/assets/image/about/k9.jpg";
+import k10 from "@/assets/image/about/k10.jpg";
+import k11 from "@/assets/image/about/k11.jpg";
+import k12 from "@/assets/image/about/k12.jpg";
+import k13 from "@/assets/image/about/k13.jpg";
+import k14 from "@/assets/image/about/k14.jpg";
+import k15 from "@/assets/image/about/k15.jpg";
+import k16 from "@/assets/image/about/k16.jpg";
+import k17 from "@/assets/image/about/k17.jpg";
+import k18 from "@/assets/image/about/k18.jpg";
+import k19 from "@/assets/image/about/k19.jpg";
+import k20 from "@/assets/image/about/k20.jpg";
 
 const imagesTop = [
   {
@@ -134,7 +134,7 @@ onMounted(() => {
 </template>
 <style scoped>
 .about {
-  margin-top: 412px;
+  margin-top: 342px;
 }
 .about__content {
   display: flex;
@@ -153,6 +153,7 @@ onMounted(() => {
   flex-shrink: 0;
   width: 110px;
   height: 120px;
+  border-radius: 15px;
 }
 .marquiz_bottom {
   justify-content: flex-end;

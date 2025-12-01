@@ -44,7 +44,7 @@ onMounted(() => {
       Dropcursor,
       StarterKit.configure({
         heading: {
-          levels: [1, 2, 3],
+          levels: [1, 2, 3, 4],
         },
       }),
     ],
@@ -183,6 +183,13 @@ async function uploadPhoto(event, content = false) {
                 d="M11.07 8.4h1.049c1.174 0 1.99.69 2.004 1.724s-.802 1.786-2.068 1.779c-1.11-.007-1.905-.605-1.99-1.357h-1.21C8.926 11.91 10.116 13 12.028 13c1.99 0 3.439-1.188 3.404-2.87-.028-1.553-1.287-2.221-2.096-2.313v-.07c.724-.127 1.814-.935 1.772-2.293-.035-1.392-1.21-2.468-3.038-2.454-1.927.007-2.94 1.196-2.981 2.426h1.23c.064-.71.732-1.336 1.744-1.336 1.027 0 1.744.64 1.744 1.568.007.95-.738 1.639-1.744 1.639h-.991V8.4ZM7.495 13V3.201H6.174v4.15H1.32V3.2H0V13h1.32V8.513h4.854V13z" />
             </svg>
           </button>
+          <button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
+            :class="{ 'is-active': editor.isActive('heading', { level: 4 }) }">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-type-h4" viewBox="0 0 16 16">
+  <path d="M13.007 3H15v10h-1.29v-2.051H8.854v-1.18C10.1 7.513 11.586 5.256 13.007 3m-2.82 6.777h3.524v-5.62h-.074a95 95 0 0 0-3.45 5.554zM7.495 13V3.201H6.174v4.15H1.32V3.2H0V13h1.32V8.513h4.854V13z"/>
+</svg>
+          </button>
+          
           <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-type-bold"
               viewBox="0 0 16 16">
@@ -240,6 +247,11 @@ label {
 .button-group {
   display: flex;
   gap: 10px;
+  padding: 5px;
+  background: #fff;
+  position: sticky;
+  top: 50px;
+  z-index: 4;
 }
 
 .button-group button,
