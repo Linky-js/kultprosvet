@@ -8,14 +8,15 @@ import PostMini from "../elements/PostMini.vue";
 import MaterialMini from "../elements/MaterialMini.vue";
 import SubscribeBlock from "../blocks/SubscribeBlock.vue";
 import PopupVideo from "../elements/PopupVideo.vue";
-
+import MiniVideoBlock from "../elements/MiniVideoBlock.vue";
+import BookItemToPage from "../elements/BookItemToPage.vue";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { A11y } from "swiper/modules";
 import { myMixinColor } from "@/mixin";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -33,7 +34,9 @@ export default {
     PostMini,
     MaterialMini,
     SubscribeBlock,
+    MiniVideoBlock,
     PopupVideo,
+    BookItemToPage,
   },
   mixins: [myMixinColor],
   setup() {
@@ -43,7 +46,7 @@ export default {
     return {
       onSwiper,
       swiperActiveIndex,
-      modules: [Navigation, Pagination, Scrollbar, A11y],
+      modules: [A11y],
     };
   },
   data() {
@@ -54,6 +57,8 @@ export default {
       videos: null,
       materials: null,
       podkasts: null,
+      bookThemes: [],
+      openlibrary: [],
       tests: null,
       nameTheme: null,
       iframe: null,
@@ -77,10 +82,43 @@ export default {
         .then((response) => {
           this.theme = response.data.theme;
           this.nameTheme = this.theme.name;
-          this.updateColorBar();
           setTimeout(() => {
             this.animateGo();
           }, 500);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      axios
+        .get(
+          this.apiUrl +
+          "api-book/get-list" +
+          `&auth=${this.user.username}:${this.user.auth_key}`
+        )
+        .then((response) => {
+          this.openlibrary = response.data.books;
+          const libraryArray = response.data.books;
+
+          libraryArray.forEach((book) => {
+            if (!this.themes.some((theme) => theme.name === book.theme.name)) {
+              this.themes.push(book.theme);
+            }
+          });
+
+          this.bookThemes = libraryArray.reduce((acc, book) => {
+            const themeName = book.theme.name;
+            let themeEntry = acc.find(
+              (entry) => entry.theme.name === themeName
+            );
+
+            if (!themeEntry) {
+              themeEntry = { theme: book.theme, books: [] };
+              acc.push(themeEntry);
+            }
+
+            themeEntry.books.push(book);
+            return acc;
+          }, []);
         })
         .catch((error) => {
           console.log(error);
@@ -173,20 +211,7 @@ export default {
           console.log(error);
         });
     },
-    updateColorBar() {
-      this.color = this.getColorClass(this.theme.name);
-
-
-      let spans = document.querySelectorAll(
-        ".swiper-pagination-progressbar-fill"
-      );
-      spans.forEach((span) => {
-        span.style.backgroundColor = this.color;
-      });
-    },
     togglePlay(iframe) {
-
-
       this.popupShow = true;
       this.iframe = iframe;
     },
@@ -279,59 +304,49 @@ export default {
   <HeaderBlock />
   <Breadcrumbs :page="[{ name: nameTheme, link: '' }]" :bannerHead="{ name: theme.img, uniq: true }"
     :title="theme.name" />
-  <div class="theme mBlock">
+  <div class="bannerPhoto">
     <div class="container">
-      <img :src="apiDomain + `web/uploads/` + theme.banner" alt="" class="bannerPhoto" />
+      <img :src="apiDomain + `web/uploads/` + theme.banner" alt="" class="bannerPhoto__img" />
+      <div class="bannerPhoto__content">
+        <p><span>Эфективное управление</span> своей жизнью, ресурсами и временем для достижения личных целей и
+          обеспечения устойчивого личностного роста</p>
+        <div class="bannerPhoto__links">
+          <div class="bannerPhoto__links-p">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.5 6.5H9L10 0.5L2.5 9.5H7L6 15.5L13.5 6.5Z" fill="#5BBA46" />
+            </svg>
+            Быстрый переход к разделу
+          </div>
+          <div class="bannerPhoto__links-list">
+            <button>Видео</button>
+            <button>Подкасты</button>
+            <button>Тесты</button>
+            <button>Библиотека</button>
+            <button>Материалы</button>
+            <button>Новости</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div v-if="videos != null && videos.length > 0" class="videos">
+  <div v-if="videos != null && videos.length > 0" class="videos" id="theme-videos">
     <div class="container">
       <div class="videos__content">
         <div class="head">
           <div class="head-h2">Видеоматериалы</div>
-          <div class="linksSlide">
-            <div class="prevSlide">
-              <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                <path d="M36.75 21H5.25" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M10.5 26.25L5.25 21L10.5 15.75" stroke="#333333" stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-            </div>
-            <div class="nextSlide">
-              <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-                <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-            </div>
-          </div>
+          <router-link class="link_all" to="/videos">
+            <span>Больше видео</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </router-link>
         </div>
-        <Swiper class="videos__items gorizontal" @swiper="updateColorBar()" :slidesPerView="'auto'" :spaceBetween="20"
-          :loop="false" :modules="modules" :navigation="{
-            enabled: true,
-            prevEl: '.prevSlide',
-            nextEl: '.nextSlide',
-          }" :pagination="{
-            type: 'progressbar',
-          }" :breakpoints="{
-            1600: {
+        <Swiper class="videos__items gorizontal" :slidesPerView="'auto'" :spaceBetween="20" :loop="false"
+          :modules="modules" :breakpoints="{
+            650: {
               slidesPerView: 'auto',
-              spaceBetween: 20,
-            },
-            1440: {
-              slidesPerView: 'auto',
-              spaceBetween: 20,
-            },
-            1280: {
-              slidesPerView: 'auto',
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 'auto',
-              spaceBetween: 12,
-            },
-            768: {
-              slidesPerView: 1,
               spaceBetween: 12,
             },
             320: {
@@ -339,79 +354,108 @@ export default {
               spaceBetween: 12,
             },
           }">
-          <swiper-slide class="post" v-for="v in videos" :key="v.id">
-            <div class="video">
-              <div :id="'btnVBlock' + v.id" class="btn__playVideo" @click="togglePlay(v.link)">
-                <svg class="playSvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                  fill="none">
-                  <path fill-rule="evenodd" clip-rule="evenodd"
-                    d="M23 12.0002C23 10.9652 22.47 9.93018 21.409 9.35318L8.597 2.38518C6.534 1.26418 4 2.72418 4 5.03318V12.0002H23Z"
-                    fill="white" />
-                  <path
-                    d="M8.597 21.615L21.409 14.647C21.89 14.3924 22.2923 14.0113 22.5727 13.5448C22.8531 13.0784 23.0008 12.5442 23 12H4V18.967C4 21.277 6.534 22.736 8.597 21.615Z"
-                    fill="white" />
-                </svg>
-                <svg class="pauseSvg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
-                  fill="none">
-                  <path
-                    d="M1.66602 5.00033C1.66602 3.42866 1.66602 2.64366 2.15435 2.15533C2.64268 1.66699 3.42768 1.66699 4.99935 1.66699C6.57102 1.66699 7.35602 1.66699 7.84435 2.15533C8.33268 2.64366 8.33268 3.42866 8.33268 5.00033V15.0003C8.33268 16.572 8.33268 17.357 7.84435 17.8453C7.35602 18.3337 6.57102 18.3337 4.99935 18.3337C3.42768 18.3337 2.64268 18.3337 2.15435 17.8453C1.66602 17.357 1.66602 16.572 1.66602 15.0003V5.00033ZM11.666 5.00033C11.666 3.42866 11.666 2.64366 12.1543 2.15533C12.6427 1.66699 13.4277 1.66699 14.9993 1.66699C16.571 1.66699 17.356 1.66699 17.8443 2.15533C18.3327 2.64366 18.3327 3.42866 18.3327 5.00033V15.0003C18.3327 16.572 18.3327 17.357 17.8443 17.8453C17.356 18.3337 16.571 18.3337 14.9993 18.3337C13.4277 18.3337 12.6427 18.3337 12.1543 17.8453C11.666 17.357 11.666 16.572 11.666 15.0003V5.00033Z"
-                    fill="white" />
-                </svg>
-              </div>
-              <img class="poster" :src="apiDomain + 'web/uploads/' + v.poster" alt="" />
-            </div>
-            <div class="post__content">
-              <div class="kategory">
-                <p class="description-category">
-                  {{ v.category.name }}
-                </p>
-              </div>
-              <h3 class="headPost">
-                {{ truncate(v.title, 44) }}
-              </h3>
-              <p class="sub-headPost">
-                {{ v.text }}
-              </p>
-            </div>
-          </swiper-slide>
+          <SwiperSlide class="videos__slide" v-for="video in videos" :key="video.id">
+            <MiniVideoBlock :video="video" @open-video="togglePlay" />
+          </SwiperSlide>
+
         </Swiper>
       </div>
     </div>
   </div>
   <PopupVideo v-if="popupShow" :item="iframe" @closePopup="closePopup" />
-  <div v-if="podkasts != null && podkasts.length > 0" class="podkasts mBlock">
+  <div v-if="podkasts != null && podkasts.length > 0" class="podkasts">
     <div class="container">
       <div class="podkasts__content">
-        <div class="head-h2">Подкасты</div>
-        <div class="podkasts__items">
-          <PodkastItemToPage v-for="podkast in podkasts.slice(0, 5)" :key="podkast.id" :item="podkast" />
+        <div class="head">
+          <div class="head-h2">Подкасты</div>
+          <router-link class="link_all" to="/podcasts">
+            <span>Больше подкастов</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </router-link>
         </div>
+        <Swiper class="podkasts__swiper" :slidesPerView="'auto'" :spaceBetween="20" :loop="false" :modules="modules"
+          :breakpoints="{
+            650: {
+              spaceBetween: 20,
+            },
+            320: {
+              spaceBetween: 16,
+            },
+          }">
+          <SwiperSlide v-for="podkast in podkasts.slice(0, 5)" :key="podkast.id">
+            <PodkastItemToPage :item="podkast" />
+          </SwiperSlide>
+        </Swiper>
       </div>
-      <router-link to="/podcasts" class="linkAll">Больше подкастов
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-          <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </router-link>
     </div>
   </div>
-  <div v-if="tests != null && tests.length > 0" class="tests mBlock">
+  <div v-if="tests != null && tests.length > 0" class="tests">
     <div class="container">
       <div class="tests__content">
-        <div class="head-h2">Тесты</div>
-        <div class="tests__items">
-          <TestItemToPage v-for="test in tests" :key="test.id" :item="test" />
+        <div class="head">
+          <div class="head-h2">Тесты</div>
+          <router-link class="link_all" to="/tests">
+            <span>Больше тестов</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </router-link>
         </div>
+        <Swiper class="tests__swiper" :slidesPerView="'auto'" :spaceBetween="20" :loop="false" :modules="modules"
+          :breakpoints="{
+            650: {
+              spaceBetween: 20,
+            },
+            320: {
+              spaceBetween: 16,
+            },
+          }">
+          <SwiperSlide v-for="(test, index) in tests" :key="test.id">
+            <TestItemToPage :item="test" :index="index" />
+          </SwiperSlide>
+        </Swiper>
       </div>
-      <router-link to="/tests" class="linkAll">Больше тестов
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-          <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </router-link>
     </div>
   </div>
-  <div class="textBanner mBlock" :style="{
+  <div class="quote"
+    :style="{ backgroundImage: `url(/img/bg-theme.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }">
+    <div class="container">
+      <div class="quote__svg">
+        <svg width="409" height="302" viewBox="0 0 409 302" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M310.626 0C364.542 0 408.251 43.7082 408.251 97.625C408.251 137.449 387.52 175.981 356.578 183.416C344.643 186.284 335.138 201.6 337.18 219.085C339.914 242.488 361.078 266.133 402.982 284.766C412.312 288.914 408.405 302.95 398.273 301.681C289.065 288.009 213.365 216.812 213.002 116.082C213.001 46.8076 253.928 0 310.626 0Z"
+            fill="url(#paint0_linear_4088_2209)" fill-opacity="0.5" />
+          <path
+            d="M97.6237 0C151.541 0 195.249 43.7082 195.249 97.625C195.249 137.449 174.518 175.981 143.576 183.416C131.641 186.284 122.136 201.6 124.178 219.085C126.912 242.488 148.076 266.133 189.98 284.766C199.31 288.914 195.403 302.95 185.271 301.681C76.0631 288.009 0.363165 216.812 3.13505e-08 116.082C-0.00130797 46.8076 40.9265 0 97.6237 0Z"
+            fill="url(#paint1_linear_4088_2209)" fill-opacity="0.5" />
+          <defs>
+            <linearGradient id="paint0_linear_4088_2209" x1="310.638" y1="0" x2="310.638" y2="301.762"
+              gradientUnits="userSpaceOnUse">
+              <stop stop-color="#4E9C3D" />
+              <stop offset="1" stop-color="#56AA43" />
+            </linearGradient>
+            <linearGradient id="paint1_linear_4088_2209" x1="97.6361" y1="0" x2="97.6361" y2="301.762"
+              gradientUnits="userSpaceOnUse">
+              <stop stop-color="#4E9C3D" />
+              <stop offset="1" stop-color="#56AA43" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="quote__text">
+        <div class="quote__title"><span>Время</span> - это наш невидимый партнер в каждом деле</div>
+        <div class="quote__author">Андрей Платонов</div>
+      </div>
+      <img class="quote__img" src="/img/boy.png" alt="">
+    </div>
+  </div>
+  <!--<div class="textBanner mBlock" :style="{
     background: `linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${apiDomain}web/uploads/${theme.banner_full})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -425,24 +469,25 @@ export default {
         </div>
       </div>
     </div>
-  </div>
-  <div v-if="news != null && news.length > 0" class="news mBlock">
+  </div>-->
+  <div class="lib">
     <div class="container">
-      <div class="news__content">
-        <div class="head-h2">Новости</div>
-        <Swiper class="news__body" :slidesPerView="'auto'" :spaceBetween="20" :loop="false">
-          <Swiper-slide class="newsPost" v-for="post in news" :key="post.id">
-            <PostMini class="postItem" :item="post" />
-          </Swiper-slide>
-        </Swiper>
-        <router-link :to="'/news?theme=' + theme.id + theme.name + '$' + theme.name + theme.id
-          " class="linkAll">Больше новостей
-          <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
+      <div class="head">
+        <div class="head-h2">Библиотека</div>
+        <router-link class="link_all" to="/library">
+          <span>Больше книг</span>
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </router-link>
       </div>
+      <Swiper class="lib__swiper" :slidesPerView="'auto'" :spaceBetween="20" :loop="false" :modules="modules">
+        <swiper-slide v-for="item in openlibrary" :key="item.id">
+          <book-item-to-page :item="item" />
+        </swiper-slide>
+
+      </Swiper>
     </div>
   </div>
   <div class="marqueez">
@@ -455,178 +500,177 @@ export default {
   <div v-if="materials != null && materials.length > 0" class="materials">
     <div class="container">
       <div class="materials__body">
-        <div class="material__banner">
+        <div class="head">
           <div class="head-h2">МАТЕРИАЛЫ</div>
-          <div class="material__linkInfo">
-            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-              <path d="M36.75 21H5.25" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M10.5 26.25L5.25 21L10.5 15.75" stroke="#333333" stroke-linecap="round"
+          <router-link class="link_all" to="/materials">
+            <span>Больше файлов</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
                 stroke-linejoin="round" />
             </svg>
-            Двигайте
-          </div>
+          </router-link>
         </div>
-        <Swiper class="materials__items" @swiper="updateColorBar()" :slidesPerView="'auto'" :spaceBetween="20"
-          :loop="false" :modules="modules" :navigation="{
-            enabled: true,
-            prevEl: '.arrow-prev',
-            nextEl: '.arrow-next',
-          }" :pagination="{
-            type: 'progressbar',
-          }">
+        <Swiper class="materials__items" :slidesPerView="'auto'" :spaceBetween="20" :loop="false" :modules="modules">
           <Swiper-slide class="material" v-for="material in materials" :key="material.id">
             <MaterialMini :item="material" />
           </Swiper-slide>
         </Swiper>
       </div>
-      <router-link to="/materials" class="linkAll">Больше материалов
-        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
-          <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </router-link>
+    </div>
+  </div>
+  <div v-if="news != null && news.length > 0" class="news">
+    <div class="container">
+      <div class="news__content">
+        <div class="head">
+          <div class="head-h2">Новости</div>
+          <router-link class="link_all" :to="'/news?theme=' + theme.id + theme.name + '$' + theme.name + theme.id">
+            <span>Больше новостей</span>
+            <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25 21H36.75" stroke="#333333" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M31.5 26.25L36.75 21L31.5 15.75" stroke="#333333" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </router-link>
+        </div>
+        <Swiper class="news__body" :slidesPerView="'auto'" :spaceBetween="20" :loop="false">
+          <Swiper-slide class="newsPost" v-for="post in news" :key="post.id">
+            <PostMini class="postItem" :item="post" />
+          </Swiper-slide>
+        </Swiper>
+      </div>
     </div>
   </div>
   <SubscribeBlock />
   <FooterBlock />
 </template>
 <style scoped>
-.videos__items {
-  display: flex;
-
-  gap: 22px;
-  padding: 30px 0;
-}
-
-.post {
-  position: relative;
-  width: 500px;
-  flex-shrink: 0;
-  height: 388px;
-}
-
-.post .poster {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.post .video {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-}
-
-.video::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg,
-      rgba(0, 0, 0, 0.0001) 0%,
-      rgba(0, 0, 0, 0.3) 100%);
-  z-index: 1;
-}
-
-.post .post__content {
-  position: absolute;
-  left: 44px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 2;
-}
-
-.headPost {
-  color: var(--Neutral-100, #fff);
-  font-family: Onest;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 22px;
-  /* 122.222% */
-}
-
-.description-category {
-  color: var(--Neutral-100, #fff);
-  font-family: Onest;
-  font-size: 26px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 22px;
-}
-
-.sub-headPost {
-  color: var(--Neutral-100, #fff);
-  font-family: Onest;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  max-width: 302px;
-}
-
-.btn__playVideo {
-  position: absolute;
-  top: 43px;
-  right: 43px;
-  z-index: 2;
-  cursor: pointer;
-  border-radius: 90px;
-  background: rgba(111, 111, 111, 0.3);
+.link_all {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 13px;
-  width: 50px;
-  height: 50px;
+  gap: 8px;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 129%;
+  text-align: center;
+  color: #333;
 }
 
-.kategory span {
-  color: var(--Neutral-100, #fff);
-  font-family: Onest;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 22px;
-  /* 183.333% */
-  text-transform: uppercase;
+.videos__items {
+  padding: 32px 0;
+  overflow: visible;
 }
 
-.kategory {
-  border-bottom: 1px solid #b9b9b9;
+.videos__slide {
+  width: 530px;
+}
+
+.videos__slide:deep(.post) {
+  max-width: 100%;
   width: 100%;
-  max-width: 322px;
-  padding-bottom: 10px;
 }
+
 
 .head-h2 {
   width: 395px;
   max-width: 100%;
 }
-
-.podkasts__content,
-.tests__content {
-  display: flex;
-  gap: 105px;
+.podkasts {
+  margin-top: 140px;
 }
-
-.tests__items {
+.podkasts__content {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
+}
+
+.podkasts__swiper {
+  overflow: visible;
+}
+
+.podkasts__swiper .swiper-slide {
+  width: 300px;
 }
 
 .bannerPhoto {
+  padding-top: 20px;
+  padding-bottom: 156px;
+}
+
+.bannerPhoto__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   max-width: none;
+  border-radius: 28px;
+  margin-bottom: 46px;
+}
+
+.bannerPhoto__content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: 30px;
+  font-family: "Onest", sans-serif;
+}
+
+.bannerPhoto__content p {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 135%;
+  color: #333;
+  max-width: 603px;
+  width: 100%;
+}
+
+.bannerPhoto__content p span {
+  color: #5bba46;
+}
+
+.bannerPhoto__links {
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bannerPhoto__links-p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 135%;
+  color: #686868;
+}
+
+.bannerPhoto__links-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bannerPhoto__links-list button {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 135%;
+  color: #464646;
+  padding: 10px 16px;
+  border: 1px solid #f2f2f2;
+  border-radius: 100px;
+  text-align: center;
+  background: #f5f5f5;
+  cursor: pointer;
+  transition: .3s all;
+}
+
+.bannerPhoto__links-list button:hover {
+  background: #5f22c1;
+  color: #fff;
 }
 
 .textBanner {
@@ -680,6 +724,10 @@ export default {
   width: max-content;
 }
 
+.news {
+  margin-bottom: 140px;
+  margin-top: 140px;
+}
 .postItem {
   max-width: 373px;
 }
@@ -687,13 +735,19 @@ export default {
 .news__content {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 22px;
+}
+
+.news__body {
+  overflow: visible;
 }
 
 .swiper {
   width: 100%;
 }
-
+.marqueez {
+  margin-top: 140px;
+}
 .marqueez__content {
   color: #eaeaea;
   font-family: Onest;
@@ -717,7 +771,8 @@ export default {
 
 .materials__body {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .material__banner {
@@ -754,7 +809,7 @@ export default {
 }
 
 .materials__items {
-  padding-bottom: 46px;
+  overflow: visible;
 }
 
 .material {
@@ -786,11 +841,103 @@ export default {
 .linksSlide div {
   cursor: pointer;
 }
-
-.podkasts__items {
+.tests {
+  margin-top: 140px;
+}
+.tests__content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
+}
+
+.tests__swiper {
+  overflow: visible;
+}
+
+.tests__swiper .swiper-slide {
+  width: 310px;
+}
+
+.quote {
+  height: 586px;
+  font-family: "Onest", sans-serif;
+  position: relative;
+  padding: 97px 0;
+  margin-top: 140px;
+}
+
+.quote .container {
+  height: 100%;
+}
+
+.quote__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 17px;
+  max-width: 747px;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: relative;
+}
+
+.quote__svg {
+  left: 15px;
+  position: absolute;
+  top: 45px;
+}
+
+.quote__title {
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 110%;
+  color: #fff;
+}
+
+.quote__title span {
+  color: #1e650e;
+}
+
+.quote__img {
+  width: 608px;
+  height: auto;
+  position: absolute;
+  object-fit: cover;
+  right: 71px;
+  bottom: 0;
+}
+
+.quote__author {
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 110%;
+  color: #1e640e;
+}
+.lib {
+  margin-top: 140px;
+}
+.lib .head {
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1200px) {
+  .quote__title {
+    font-size: 36px;
+  }
+
+  .quote {
+    height: 450px;
+  }
+
+  .quote__img {
+    width: 450px;
+  }
+
+  .quote__svg svg {
+    width: 200px;
+    height: auto;
+  }
 }
 
 @media screen and (max-width: 650px) {
@@ -801,15 +948,32 @@ export default {
   .textBanner {
     display: none;
   }
-
-  .podkasts__content,
+  .podkasts, .tests, .quote, .lib, .marqueez, .materials, .news {
+    margin-top: 80px;
+  }
+  .news {
+    margin-bottom: 80px;
+  }
+  .podkasts__content {
+    gap: 8px;
+  }
+  .lib .head {
+    margin-bottom: 8px;
+  }
   .tests__content {
     flex-direction: column;
-    gap: 30px;
+    gap: 8px;
+  }
+  .materials__body {
+    gap: 8px;
   }
 
   .textBanner__text {
     font-size: 22px;
+  }
+
+  .news__content {
+    gap: 8px;
   }
 
   .line {
@@ -820,22 +984,21 @@ export default {
     display: none;
   }
 
-  .newsPost {
-    width: 100%;
+  .link_all {
+    span {
+      display: none;
+    }
   }
 
-  .head {
-    flex-direction: column;
-    align-items: flex-start;
+  .videos__items {
+    padding-top: 8px;
+    padding-bottom: 0;
   }
 
   .marqueez__content {
-    font-size: 22px;
+    font-size: 36px;
   }
 
-  .materials__body {
-    flex-direction: column;
-  }
 
   .material__banner {
     width: 100%;
@@ -844,11 +1007,68 @@ export default {
   }
 
   .bannerPhoto {
-    min-height: 300px;
+    padding-top: 20px;
+    padding-bottom: 80px;
+  }
+
+  .bannerPhoto__content {
+    flex-direction: column;
+    gap: 48px;
+
+    p {
+      font-size: 18px;
+      line-height: 120%;
+    }
+  }
+
+  .bannerPhoto__img {
+    min-height: 335px;
+    margin-bottom: 24px;
+    border-radius: 16px;
   }
 
   .post .post__content {
     left: 20px;
+  }
+
+  .podkasts__swiper .swiper-slide {
+    width: 248px;
+  }
+
+  .quote {
+    height: 586px;
+    padding-top: 137px;
+    padding-bottom: 0;
+  }
+
+  .quote__svg {
+    top: 26px;
+    left: 20px;
+  }
+
+  .quote__svg svg {
+    width: 213px;
+  }
+
+  .quote__text {
+    justify-content: flex-start;
+    gap: 24px;
+  }
+
+  .quote__title {
+    font-size: 24px;
+  }
+
+  .quote__author {
+    font-size: 14px;
+  }
+
+  .quote__img {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 372px;
+    height: 350px;
   }
 }
 </style>

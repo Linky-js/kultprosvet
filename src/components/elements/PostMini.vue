@@ -131,13 +131,17 @@ export default {
 
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
+  .news__item__date {
+    margin-bottom: 4px;
+  }
   .news__item {
     width: 260px;
     height: 316px;
   }
   .news__item--text {
     padding: 30px 16px 16px;
+    gap: 6px;
   }
   .news__item-arrow {
     width: 36px;

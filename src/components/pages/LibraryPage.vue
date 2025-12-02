@@ -89,8 +89,6 @@ export default {
             themeEntry.books.push(book);
             return acc;
           }, []);
-
-        
         })
         .catch((error) => {
           console.log(error);

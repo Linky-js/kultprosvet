@@ -123,142 +123,113 @@ export default {
 };
 </script>
 <template>
-  <div class="podcast" :data-sound="item.link">
-    <div class="time">{{ remainingTime }}</div>
-    <div class="podcast__img">
-      <div class="podcast__options" :id="'audioB' + item.id" @click="togglePlayAudio(item.link)">
-        <div class="podcast__play" v-if="!isPlaying">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M19.1673 9.99755C19.1673 9.13505 18.7257 8.27255 17.8415 7.79171L7.16482 1.98505C5.44565 1.05088 3.33398 2.26755 3.33398 4.19171V9.99755H19.1673Z"
-              fill="#5F22C1" />
-            <path
-              d="M7.16482 18.0125L17.8415 12.2058C18.2423 11.9936 18.5776 11.6761 18.8112 11.2873C19.0449 10.8986 19.168 10.4535 19.1673 10H3.33398V15.8058C3.33398 17.7308 5.44565 18.9467 7.16482 18.0125Z"
-              fill="#5F22C1" />
-          </svg>
-        </div>
-        <div class="podcast__pause" v-else>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1.66602 5.0013C1.66602 3.42964 1.66602 2.64464 2.15435 2.1563C2.64268 1.66797 3.42768 1.66797 4.99935 1.66797C6.57102 1.66797 7.35602 1.66797 7.84435 2.1563C8.33268 2.64464 8.33268 3.42964 8.33268 5.0013V15.0013C8.33268 16.573 8.33268 17.358 7.84435 17.8463C7.35602 18.3346 6.57102 18.3346 4.99935 18.3346C3.42768 18.3346 2.64268 18.3346 2.15435 17.8463C1.66602 17.358 1.66602 16.573 1.66602 15.0013V5.0013ZM11.666 5.0013C11.666 3.42964 11.666 2.64464 12.1543 2.1563C12.6427 1.66797 13.4277 1.66797 14.9993 1.66797C16.571 1.66797 17.356 1.66797 17.8443 2.1563C18.3327 2.64464 18.3327 3.42964 18.3327 5.0013V15.0013C18.3327 16.573 18.3327 17.358 17.8443 17.8463C17.356 18.3346 16.571 18.3346 14.9993 18.3346C13.4277 18.3346 12.6427 18.3346 12.1543 17.8463C11.666 17.358 11.666 16.573 11.666 15.0013V5.0013Z"
-              fill="white" />
-          </svg>
-        </div>
-      </div>
-      <img v-if="item.pic" :src="apiDomain + 'web/uploads/' + item.pic" alt="" />
+  <div class="podkast__body-item podkastComponent" :data-sound="item.link">
+    <div class="image">
+      <router-link :to="'podcast/' + $route.params.id != 'podcast/' + item.id ? `/podcast/${item.id}` : ''">
+        <img v-if="item.pic" :src="apiDomain + 'web/uploads/' + item.pic" alt="" class="img" />
+      </router-link>
     </div>
-    <div class="podcast__title">{{ item.title }}</div>
+    <div class="btn__playAudio" :id="'audioB' + item.id" @click="togglePlayAudio(item.link)">
+      <svg class="playSvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M23 12.0002C23 10.9652 22.47 9.93018 21.409 9.35318L8.597 2.38518C6.534 1.26418 4 2.72418 4 5.03318V12.0002H23Z"
+          fill="white" />
+        <path
+          d="M8.597 21.615L21.409 14.647C21.89 14.3924 22.2923 14.0113 22.5727 13.5448C22.8531 13.0784 23.0008 12.5442 23 12H4V18.967C4 21.277 6.534 22.736 8.597 21.615Z"
+          fill="white" />
+      </svg>
+      <svg class="pauseSvg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path
+          d="M1.66602 5.00033C1.66602 3.42866 1.66602 2.64366 2.15435 2.15533C2.64268 1.66699 3.42768 1.66699 4.99935 1.66699C6.57102 1.66699 7.35602 1.66699 7.84435 2.15533C8.33268 2.64366 8.33268 3.42866 8.33268 5.00033V15.0003C8.33268 16.572 8.33268 17.357 7.84435 17.8453C7.35602 18.3337 6.57102 18.3337 4.99935 18.3337C3.42768 18.3337 2.64268 18.3337 2.15435 17.8453C1.66602 17.357 1.66602 16.572 1.66602 15.0003V5.00033ZM11.666 5.00033C11.666 3.42866 11.666 2.64366 12.1543 2.15533C12.6427 1.66699 13.4277 1.66699 14.9993 1.66699C16.571 1.66699 17.356 1.66699 17.8443 2.15533C18.3327 2.64366 18.3327 3.42866 18.3327 5.00033V15.0003C18.3327 16.572 18.3327 17.357 17.8443 17.8453C17.356 18.3337 16.571 18.3337 14.9993 18.3337C13.4277 18.3337 12.6427 18.3337 12.1543 17.8453C11.666 17.357 11.666 16.572 11.666 15.0003V5.00033Z"
+          fill="white" />
+      </svg>
+    </div>
+    <div class="audio__visualization">
+      <div class="head__audio">{{ item.title }}</div>
+      <div class="time">{{ remainingTime }}</div>
+    </div>
   </div>
 </template>
 <style scoped>
-.podcast {
-  min-height: 362px;
-  width: 100%;
-  position: relative;
-  background: #f4f5f5;
-  border-radius: 28px;
+.podkast__body-item {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  justify-content: space-between;
-  padding-top: 28px;
-  padding-bottom: 21px;
-  padding-left: 24px;
-  padding-right: 24px;
+  gap: 15px;
 }
 
-.time {
-  border-radius: 100px;
-  background: #fff;
-  padding: 10px;
-  font-weight: 500;
-  font-size: 14px;
-  text-align: center;
-  color: #6d6d6d;
-  position: absolute;
-  top: 12px;
-  left: 12px;
+.image {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  flex-shrink: 0;
 }
-.podcast__img {
-  position: relative;
-  width: 238px;
-  height: 238px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-.podcast__img img {
+
+.image .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
 }
-.podcast__options {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.podcast__play {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #fff;
+
+.audio__visualization {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
 }
-.podcast__play::before {
-  content: '';
-  position: absolute;
-  border: 1px solid #fff;
-  border-radius: 100px;
-  width: 58px;
-  height: 58px;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.1);
-  z-index: -1;
-  left: -7px;
-  top: -7px;
-}
-.podcast__pause {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #5f22c1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.podcast__title {
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 120%;
-  text-align: center;
+
+.head__audio {
   color: #333;
-  text-align: center;
+  font-family: Onest;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.32px;
 }
-@media (max-width: 650px) {
-  .podcast {
-    min-height: 290px;
-    border-radius: 16px;
-    padding-top: 32px;
-    padding-left: 12px;
-    padding-right: 12px;
-    padding-bottom: 13px;
-  }
-  .podcast__title {
-    font-size: 13px;
-    line-height: 120%;
-  }
-  .time {
-    font-size: 12px;
-  }
-  .podcast__img {
-    width: 184px;
-    height: 184px;
-  }
+
+.time {
+  color: #979797;
+  font-family: Onest;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.28px;
+}
+
+.audio__bars {
+  height: 24px;
+}
+
+.btn__playAudio {
+  background: #d1d1d1;
+}
+
+.btn__playAudio {
+  border-radius: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.audio__bars {
+  display: flex;
+  align-items: flex-end;
+  height: 24px;
+}
+
+.audio__bar {
+  width: 4px;
+  margin: 0 2px;
+  background-color: #8b8b8b;
+  transition: background-color 0.2s, height 0.25s;
+}
+
+.audio__bar--active {
+  background-color: #439563;
 }
 </style>
