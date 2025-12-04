@@ -65,7 +65,7 @@ const truncate = (text, maxLength) => {
     position: relative;
     display: flex;
     margin-bottom: 16px;
-    height: 273px;
+    height: 345px;
     border-radius: 28px;
     overflow: hidden;
 }

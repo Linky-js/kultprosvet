@@ -39,7 +39,7 @@ export default {
           <div class="form">
             <input v-validate-email="updateEmailValidity" type="text" placeholder="Введите электронную почту"
               class="form__input" />
-            <BtnRed class="form__btn">Подписаться</BtnRed>
+            <BtnRed class="form__btn" :disabled="!isEmailValid">Подписаться</BtnRed>
           </div>
           <div class="description">
             Оставляя свой адрес электронной почты , выдаёте согласие на

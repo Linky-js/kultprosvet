@@ -17,124 +17,98 @@ export default {
 };
 </script>
 <template>
-  <router-link :to="`/book/${item.id}`" class="book_item">
-    <div class="image">
-      <img
-        :src="apiDomain + 'web/uploads/' + item.poster"
-        alt=""
-        class="book"
-      />
+  <router-link :to="`/book/${item.id}`" class="book">
+    <div class="book__img">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M14.4674 25.6914C14.1454 25.6914 13.9284 25.7229 13.8164 25.7544V27.8159C13.9494 27.8474 14.1157 27.8562 14.3449 27.8562C15.1832 27.8562 15.6994 27.4327 15.6994 26.7169C15.6994 26.0764 15.2549 25.6914 14.4674 25.6914ZM20.5697 25.7124C20.2197 25.7124 19.9922 25.7439 19.8574 25.7754V30.3429C19.9922 30.3744 20.2092 30.3744 20.4052 30.3744C21.8349 30.3849 22.7659 29.5974 22.7659 27.9314C22.7764 26.4789 21.9277 25.7124 20.5697 25.7124Z"
+          fill="white" />
+        <path
+          d="M24.5 3.5H10.5C9.57174 3.5 8.6815 3.86875 8.02513 4.52513C7.36875 5.1815 7 6.07174 7 7V35C7 35.9283 7.36875 36.8185 8.02513 37.4749C8.6815 38.1313 9.57174 38.5 10.5 38.5H31.5C32.4283 38.5 33.3185 38.1313 33.9749 37.4749C34.6313 36.8185 35 35.9283 35 35V14L24.5 3.5ZM16.6215 28.3325C16.0808 28.84 15.2827 29.0675 14.3535 29.0675C14.1733 29.0709 13.9931 29.0604 13.8145 29.036V31.5315H12.25V24.6435C12.9561 24.5385 13.6695 24.4905 14.3832 24.5C15.358 24.5 16.051 24.6855 16.5183 25.0583C16.9628 25.4118 17.2638 25.991 17.2638 26.6735C17.262 27.3595 17.0345 27.9388 16.6215 28.3325ZM23.2838 30.7038C22.5488 31.3145 21.4305 31.605 20.0638 31.605C19.2448 31.605 18.6655 31.5525 18.2717 31.5V24.6453C18.9781 24.5425 19.6913 24.494 20.405 24.5C21.7297 24.5 22.5908 24.738 23.2628 25.2455C23.989 25.7845 24.444 26.6438 24.444 27.8775C24.444 29.2128 23.9558 30.135 23.2838 30.7038ZM29.75 25.8475H27.069V27.4418H29.575V28.7263H27.069V31.5333H25.4835V24.5525H29.75V25.8475ZM24.5 15.75H22.75V7L31.5 15.75H24.5Z"
+          fill="white" />
+      </svg>
+      <img :src="apiDomain + 'web/uploads/' + item.poster" alt="" />
     </div>
     <div class="book__content">
-      <div class="formatIcon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
-          viewBox="0 0 50 50"
-          fill="none"
-        >
-          <path
-            d="M17.2223 30.5835C16.8389 30.5835 16.5806 30.621 16.4473 30.6585V33.1127C16.6056 33.1502 16.8035 33.1606 17.0764 33.1606C18.0743 33.1606 18.6889 32.6564 18.6889 31.8043C18.6889 31.0418 18.1598 30.5835 17.2223 30.5835ZM24.4868 30.6085C24.0702 30.6085 23.7993 30.646 23.6389 30.6835V36.121C23.7993 36.1585 24.0577 36.1585 24.291 36.1585C25.9931 36.171 27.1014 35.2335 27.1014 33.2502C27.1139 31.521 26.1035 30.6085 24.4868 30.6085Z"
-            fill="#D5D5D5"
-          />
-          <path
-            d="M29.1673 4.1665H12.5007C11.3956 4.1665 10.3358 4.60549 9.55437 5.38689C8.77297 6.16829 8.33398 7.2281 8.33398 8.33317V41.6665C8.33398 42.7716 8.77297 43.8314 9.55437 44.6128C10.3358 45.3942 11.3956 45.8332 12.5007 45.8332H37.5007C38.6057 45.8332 39.6655 45.3942 40.4469 44.6128C41.2283 43.8314 41.6673 42.7716 41.6673 41.6665V16.6665L29.1673 4.1665ZM19.7882 33.729C19.1444 34.3332 18.1944 34.604 17.0882 34.604C16.8736 34.608 16.6591 34.5955 16.4465 34.5665V37.5373H14.584V29.3373C15.4246 29.2123 16.2738 29.1552 17.1236 29.1665C18.284 29.1665 19.109 29.3873 19.6652 29.8311C20.1944 30.2519 20.5527 30.9415 20.5527 31.754C20.5506 32.5707 20.2798 33.2603 19.7882 33.729ZM27.7194 36.5519C26.8444 37.279 25.5132 37.6248 23.8861 37.6248C22.9111 37.6248 22.2215 37.5623 21.7527 37.4998V29.3394C22.5936 29.2171 23.4426 29.1593 24.2923 29.1665C25.8694 29.1665 26.8944 29.4498 27.6944 30.054C28.559 30.6957 29.1007 31.7186 29.1007 33.1873C29.1007 34.7769 28.5194 35.8748 27.7194 36.5519ZM35.4173 30.7707H32.2257V32.6686H35.209V34.1978H32.2257V37.5394H30.3382V29.229H35.4173V30.7707ZM29.1673 18.7498H27.084V8.33317L37.5007 18.7498H29.1673Z"
-            fill="#D5D5D5"
-          />
-        </svg>
+      <div class="title">
+        {{ item.title }}
       </div>
-      <div class="book__text">
-        <div class="title__book">
-          {{ item.title }}
-        </div>
-        <div class="format">{{ item.format }}, {{ item.size }}</div>
-        <div class="more"
-          >Открыть файл</div
-        >
-      </div>
+      <div class="format">{{ item.format }}, {{ item.size }}</div>
+      <div class="more">Открыть файл</div>
     </div>
   </router-link>
 </template>
 <style scoped>
-.book_item {
-  display: flex;
-  gap: 14px;
-  cursor: pointer;
-  max-width: 380px;
-}
-.book_item svg{
-  transition: all 0.3s;
-}
-.book_item:hover svg{
-  transform: scale(1.1);
-}
-.book_item svg path{
-  transition: all 0.3s;
-}
-.book_item:hover svg path{
-  fill: #5f22c1;
-}
-.image {
-  width: 148px;
-  height: 206px;
-  background: #f4f4f4;
-  padding: 20px;
-  flex-shrink: 0;
-}
 .book {
+  font-family: "Onest", sans-serif;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.book__img {
+  position: relative;
+  width: 100%;
+  height: 313px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.book__img svg {
+  top: 8px;
+  left: 4px;
+  position: absolute;
+}
+.book__img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-}
-.book__text {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.title__book {
-  font-size: 16px;
-  font-weight: 700;
 }
 .book__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  border-bottom: 4px solid #E0E0E0;
+  gap: 4px;
 }
-.formatIcon {
-  max-width: 50px;
-}
-.book__text {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.title__book {
-  color: #333;
-  font-family: Onest;
-  font-size: 16px;
-  font-style: normal;
+.title{
   font-weight: 500;
-  line-height: normal;
+  font-size: 16px;
+  line-height: 135%;
+  color: #333;
 }
 .format {
-  color: #717171;
-  font-family: Onest;
-  font-size: 14px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  font-size: 14px;
+  line-height: 135%;
+  color: #717171;
+  margin-bottom: 1px;
 }
 .more {
-  color: #5f22c1;
-  font-family: Onest;
-  font-size: 14px;
-  font-style: normal;
   font-weight: 500;
-  line-height: normal;
-  text-decoration: none;
+  font-size: 14px;
+  line-height: 135%;
+  color: #5f22c1;
+}
+@media (max-width: 650px){
+  .book{
+    width: 162px;
+    gap: 12px;
+  }
+  .book__img {
+    height: 253px;
+  }
+  .book__img svg {
+    width: 36px;
+    height: 36px;
+    left: 4px;
+    top: 6px;
+  }
+  .title {
+    font-size: 14px;
+  }
+  .format {
+    font-size: 12px;
+  }
+  .more {
+    font-size: 13px;
+  }
 }
 </style>
