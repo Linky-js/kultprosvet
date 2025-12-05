@@ -69,9 +69,91 @@ export default {
     };
   },
   computed: {
+    /* 
+    1 - Лайф-менеджмент
+    2 - Наука
+    3 - Литература
+    4 - Музыка
+    5 - История
+    6 - Архитектура
+    7 - Живопись
+    8 - Кино
+    9 - Философия
+    10 - Мода
+    11 - Урбанистика
+    12 - Спорт
+    */
     getThemeId() {
       return this.$route.params.id;
     },
+    themeBackground() {
+      const gradients = {
+        1: "linear-gradient(180deg, #54aa41 0%, #71d25c 100%)",
+        2: "linear-gradient(180deg, #407cee 0%, #5e96ff 100%)",
+        3: "linear-gradient(180deg, #e25436 0%, #ff5a37 100%)",
+        4: "linear-gradient(180deg, #654cda 0%, #6f54ea 100%)",
+        5: "linear-gradient(180deg, #8b5e2a 0%, #986932 100%)",
+        6: "linear-gradient(180deg, #636977 0%, #717786 100%)",
+        7: "linear-gradient(180deg, #e29e3d 0%, #f0a942 100%)",
+        8: "linear-gradient(180deg, #b82a35 0%, #d2313e 100%)",
+        9: "linear-gradient(180deg, #091335 0%, #0c1843 100%)",
+        10: "linear-gradient(180deg, #db4080 0%, #e54788 100%)",
+        11: "linear-gradient(180deg, #395e63 0%, #416b71 100%)",
+        12: "linear-gradient(180deg, #1c6bb3 0%, #1b6ebb 100%)",
+      };
+      return gradients[this.getThemeId] || gradients[1];
+    },
+    svgColorOne() {
+      const fills = {
+        1: "#4E9C3D",
+        2: "#3A6AC5",
+        3: "#CA492D",
+        4: "#5940CA",
+        5: "#865B29",
+        6: "#626671",
+        7: "#CA8F38",
+        8: "#AA2C37",
+        9: "#152455",
+        10: "#C73C75",
+        11: "#385C61",
+        12: "#1A64A8",
+      };
+      return fills[this.getThemeId] || fills[1];
+    },
+    svgColorTwo() {
+      const fills = {
+        1: "#56AA43",
+        2: "#3461B7",
+        3: "#B53F26",
+        4: "#513ABF",
+        5: "#805727",
+        6: "#626671",
+        7: "#CA8F38",
+        8: "#A92B35",
+        9: "#11204E",
+        10: "#C33D74",
+        11: "#32575C",
+        12: "#1962A6",
+      };
+      return fills[this.getThemeId] || fills[1];
+    },
+    textColorTheme() {
+      const colors = {
+        1: "#1E650E",
+        2: "#05348B",
+        3: "#880909",
+        4: "#25137B",
+        5: "#533107",
+        6: "#2D2F32",
+        7: "#694511",
+        8: "#5D141A",
+        9: "#5A72CC",
+        10: "#760A36",
+        11: "#10282B",
+        12: "#082D50",
+      };
+      return colors[this.getThemeId] || colors[1];
+    }
   },
   methods: {
     getContent() {
@@ -288,6 +370,19 @@ export default {
         ? text.substring(0, maxLength) + "..."
         : text;
     },
+    scrollToId(blockId) {
+      const el = document.getElementById(blockId);
+      if (!el) return;
+
+      const offset = 150; // отступ сверху
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    },
   },
   mounted() {
     this.getContent();
@@ -304,13 +399,13 @@ export default {
   <HeaderBlock />
   <Breadcrumbs :page="[{ name: nameTheme, link: '' }]" :bannerHead="{ name: theme.img, uniq: true }"
     :title="theme.name" />
-  <div class="bannerPhoto">
+  <div class="bannerPhoto" id="theme-bannerPhoto">
     <div class="container">
       <img :src="apiDomain + `web/uploads/` + theme.banner" alt="" class="bannerPhoto__img" />
       <div class="bannerPhoto__content">
         <p><span>Эфективное управление</span> своей жизнью, ресурсами и временем для достижения личных целей и
           обеспечения устойчивого личностного роста</p>
-        <div class="bannerPhoto__links">
+        <div class="bannerPhoto__links" v-if="videos != null || podkasts != null || tests != null">
           <div class="bannerPhoto__links-p">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13.5 6.5H9L10 0.5L2.5 9.5H7L6 15.5L13.5 6.5Z" fill="#5BBA46" />
@@ -318,12 +413,12 @@ export default {
             Быстрый переход к разделу
           </div>
           <div class="bannerPhoto__links-list">
-            <button>Видео</button>
-            <button>Подкасты</button>
-            <button>Тесты</button>
-            <button>Библиотека</button>
-            <button>Материалы</button>
-            <button>Новости</button>
+            <button v-if="videos != null && videos.length > 0" @click="scrollToId('theme-videos')">Видео</button>
+            <button v-if="podkasts != null && podkasts.length > 0" @click="scrollToId('theme-podcasts')">Подкасты</button>
+            <button v-if="tests != null && tests.length > 0" @click="scrollToId('theme-tests')">Тесты</button>
+            <button @click="scrollToId('theme-lib')">Библиотека</button>
+            <button v-if="materials != null && materials.length > 0" @click="scrollToId('theme-materials')">Материалы</button>
+            <button v-if="news != null && news.length > 0" @click="scrollToId('theme-news')">Новости</button>
           </div>
         </div>
       </div>
@@ -363,7 +458,7 @@ export default {
     </div>
   </div>
   <PopupVideo v-if="popupShow" :item="iframe" @closePopup="closePopup" />
-  <div v-if="podkasts != null && podkasts.length > 0" class="podkasts">
+  <div v-if="podkasts != null && podkasts.length > 0" class="podkasts" id="theme-podkasts">
     <div class="container">
       <div class="podkasts__content">
         <div class="head">
@@ -393,7 +488,7 @@ export default {
       </div>
     </div>
   </div>
-  <div v-if="tests != null && tests.length > 0" class="tests">
+  <div v-if="tests != null && tests.length > 0" class="tests" id="theme-tests">
     <div class="container">
       <div class="tests__content">
         <div class="head">
@@ -423,8 +518,8 @@ export default {
       </div>
     </div>
   </div>
-  <div class="quote"
-    :style="{ backgroundImage: `url(/img/bg-theme.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }">
+  <div class="quote" id="theme-quote"
+    :style="{ background: themeBackground, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }">
     <div class="container">
       <div class="quote__svg">
         <svg width="409" height="302" viewBox="0 0 409 302" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -437,20 +532,21 @@ export default {
           <defs>
             <linearGradient id="paint0_linear_4088_2209" x1="310.638" y1="0" x2="310.638" y2="301.762"
               gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4E9C3D" />
-              <stop offset="1" stop-color="#56AA43" />
+              <stop :stop-color="svgColorOne" />
+              <stop offset="1" :stop-color="svgColorTwo" />
             </linearGradient>
             <linearGradient id="paint1_linear_4088_2209" x1="97.6361" y1="0" x2="97.6361" y2="301.762"
               gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4E9C3D" />
-              <stop offset="1" stop-color="#56AA43" />
+              <stop :stop-color="svgColorOne" />
+              <stop offset="1" :stop-color="svgColorTwo" />
             </linearGradient>
           </defs>
         </svg>
       </div>
       <div class="quote__text">
-        <div class="quote__title"><span>Время</span> - это наш невидимый партнер в каждом деле</div>
-        <div class="quote__author">Андрей Платонов</div>
+        <div class="quote__title"><span :style="{ color: textColorTheme }">Время</span> - это наш невидимый партнер в
+          каждом деле</div>
+        <div class="quote__author" :style="{ color: textColorTheme }">Андрей Платонов</div>
       </div>
       <img class="quote__img" src="/img/boy.png" alt="">
     </div>
@@ -470,7 +566,7 @@ export default {
       </div>
     </div>
   </div>-->
-  <div class="lib">
+  <div class="lib" id="theme-lib">
     <div class="container">
       <div class="head">
         <div class="head-h2">Библиотека</div>
@@ -497,7 +593,7 @@ export default {
       </div>
     </div>
   </div>
-  <div v-if="materials != null && materials.length > 0" class="materials">
+  <div v-if="materials != null && materials.length > 0" class="materials" id="theme-materials">
     <div class="container">
       <div class="materials__body">
         <div class="head">
@@ -519,7 +615,7 @@ export default {
       </div>
     </div>
   </div>
-  <div v-if="news != null && news.length > 0" class="news">
+  <div v-if="news != null && news.length > 0" class="news" id="theme-news">
     <div class="container">
       <div class="news__content">
         <div class="head">
@@ -576,9 +672,11 @@ export default {
   width: 395px;
   max-width: 100%;
 }
+
 .podkasts {
   margin-top: 140px;
 }
+
 .podkasts__content {
   display: flex;
   flex-direction: column;
@@ -728,6 +826,7 @@ export default {
   margin-bottom: 140px;
   margin-top: 140px;
 }
+
 .postItem {
   max-width: 373px;
 }
@@ -745,9 +844,11 @@ export default {
 .swiper {
   width: 100%;
 }
+
 .marqueez {
   margin-top: 140px;
 }
+
 .marqueez__content {
   color: #eaeaea;
   font-family: Onest;
@@ -841,9 +942,11 @@ export default {
 .linksSlide div {
   cursor: pointer;
 }
+
 .tests {
   margin-top: 140px;
 }
+
 .tests__content {
   display: flex;
   flex-direction: column;
@@ -895,9 +998,6 @@ export default {
   color: #fff;
 }
 
-.quote__title span {
-  color: #1e650e;
-}
 
 .quote__img {
   width: 608px;
@@ -912,11 +1012,12 @@ export default {
   font-weight: 500;
   font-size: 21px;
   line-height: 110%;
-  color: #1e640e;
 }
+
 .lib {
   margin-top: 140px;
 }
+
 .lib .head {
   margin-bottom: 22px;
 }
@@ -948,22 +1049,34 @@ export default {
   .textBanner {
     display: none;
   }
-  .podkasts, .tests, .quote, .lib, .marqueez, .materials, .news {
+
+  .podkasts,
+  .tests,
+  .quote,
+  .lib,
+  .marqueez,
+  .materials,
+  .news {
     margin-top: 80px;
   }
+
   .news {
     margin-bottom: 80px;
   }
+
   .podkasts__content {
     gap: 8px;
   }
+
   .lib .head {
     margin-bottom: 8px;
   }
+
   .tests__content {
     flex-direction: column;
     gap: 8px;
   }
+
   .materials__body {
     gap: 8px;
   }
